@@ -1,0 +1,1872 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>Snape's Detention</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cedarville+Cursive&family=IM+Fell+DW+Pica+SC&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap">
+<style>
+/* Layout: a night-dark castle frame that holds one parchment surface at a time; the Marauder's Map is the hub, rooms open as parchment pages. */
+:root{
+  --stone:#16110d; --stone-2:#231b14; --stone-3:#3b2e21;
+  --parch:#ebdcb9; --parch-deep:#d9c293; --parch-edge:#b9975f;
+  --ink:#3a2314; --ink-soft:#6c4d31; --ink-faint:rgba(58,35,20,.28);
+  --wax:#8a1f1f; --wax-hi:#b8402e; --gold:#caa75a; --candle:#f4d78e;
+  --ok:#2f6a3a; --bad:#9e2f22;
+  --on-dark:#ecdfc2; --on-dark-soft:#b7a382;
+  --gryf:#7d1f1f; --huff:#b8902c; --rave:#23406f; --slyt:#235a3b;
+  --display:"IM Fell DW Pica SC","IM Fell English SC",Georgia,"Times New Roman",serif;
+  --body:"IM Fell English",Georgia,"Times New Roman",serif;
+  --sc:"IM Fell English SC",Georgia,"Times New Roman",serif;
+  --hand:"Cedarville Cursive","Segoe Script","Brush Script MT",cursive;
+  --step--1:clamp(.82rem,.8rem + .1vw,.9rem);
+  --step-0:clamp(1.02rem,.98rem + .2vw,1.12rem);
+  --step-1:clamp(1.2rem,1.1rem + .4vw,1.4rem);
+  --step-2:clamp(1.5rem,1.3rem + .9vw,2rem);
+  --step-3:clamp(1.9rem,1.5rem + 1.8vw,3rem);
+  color-scheme:dark;
+}
+html,body{min-height:100%}
+body{
+  margin:0;background:var(--stone);color:var(--on-dark);font-family:var(--body);font-size:var(--step-0);line-height:1.5;
+  background-image:
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(244,215,142,.10), transparent 70%),
+    radial-gradient(ellipse 120% 80% at 50% 120%, rgba(0,0,0,.6), transparent 60%),
+    repeating-linear-gradient(0deg, transparent 0 46px, rgba(0,0,0,.18) 46px 48px),
+    repeating-linear-gradient(90deg, transparent 0 92px, rgba(0,0,0,.10) 92px 94px);
+  background-attachment:fixed;
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--stone-2)}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--candle);outline-offset:2px}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- top bar ---------- */
+#bar{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:20;
+  background:linear-gradient(var(--stone-2),var(--stone));border-bottom:1px solid var(--stone-3);
+  padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;
+}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.seal{
+  width:40px;height:40px;border-radius:50%;border:0;cursor:pointer;flex:none;
+  background:radial-gradient(circle at 35% 30%, var(--wax-hi), var(--wax) 60%, #4d0f0f);
+  color:var(--parch);font-family:var(--display);font-size:20px;line-height:40px;
+  box-shadow:0 2px 6px rgba(0,0,0,.6), inset 0 0 0 3px rgba(0,0,0,.18);
+}
+.seal:active{transform:scale(.95)}
+.brand-name{font-family:var(--display);font-size:var(--step-1);letter-spacing:.04em;color:var(--candle);white-space:nowrap}
+.game-info{display:flex;align-items:center;gap:10px 20px;flex-wrap:wrap;margin-inline:auto}
+.stat{display:flex;flex-direction:column;align-items:center;line-height:1.1}
+.stat-l{font-family:var(--sc);font-size:var(--step--1);color:var(--on-dark-soft);letter-spacing:.06em}
+.stat-v{font-size:var(--step-1);font-variant-numeric:tabular-nums;color:var(--on-dark)}
+#timer{font-size:var(--step-2);color:var(--candle);font-variant-numeric:tabular-nums}
+#timer.low{color:var(--wax-hi);animation:pulse 1s ease-in-out infinite}
+#timer.paused{opacity:.55}
+@keyframes pulse{50%{opacity:.55}}
+.tray{display:flex;gap:4px}
+.slot{width:24px;height:28px;border:1px solid var(--stone-3);border-radius:3px;display:grid;place-items:center;font-family:var(--display);color:var(--candle);background:rgba(0,0,0,.25)}
+.slot.got{border-color:var(--gold);background:rgba(202,167,90,.12)}
+.controls{display:flex;gap:8px;align-items:center;margin-left:auto}
+.seg{display:flex;border:1px solid var(--stone-3);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:4px 10px;cursor:pointer;font-family:var(--sc);color:var(--on-dark-soft)}
+.seg button[aria-pressed="true"]{background:var(--gold);color:var(--stone)}
+.tog{border:1px solid var(--stone-3);background:transparent;border-radius:999px;padding:4px 12px;cursor:pointer;font-family:var(--sc);color:var(--on-dark-soft);white-space:nowrap}
+.tog[aria-pressed="true"]{border-color:var(--gold);color:var(--candle)}
+
+/* ---------- main frame ---------- */
+main{padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.view{max-width:1120px;margin-inline:auto}
+
+.parchment{
+  position:relative;color:var(--ink);background-color:var(--parch);
+  background-image:
+    radial-gradient(ellipse at 50% 45%, transparent 50%, rgba(140,98,52,.32) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .1 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  border-radius:4px;box-shadow:0 18px 50px rgba(0,0,0,.65), inset 0 0 0 1px rgba(120,80,40,.35), inset 0 0 40px rgba(120,80,40,.25);
+}
+.parchment ::selection{background:var(--parch-edge)}
+
+/* ---------- map ---------- */
+.map-sheet{padding:clamp(14px,3vw,30px)}
+.map-head{text-align:center;transition:opacity .8s}
+.map-head .presents{font-style:italic;color:var(--ink-soft);margin:0}
+.map-head h1{font-family:var(--display);font-size:var(--step-3);margin:.1em 0 .2em;letter-spacing:.03em;text-wrap:balance;font-weight:400}
+.map-wrap{position:relative}
+#map{display:block;width:100%;height:auto;overflow:visible}
+#map text{font-family:var(--sc);fill:var(--ink)}
+#map .ink{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+#map .ink.thin{stroke-width:1.1}
+#map .ink.faint{stroke:var(--ink-soft);stroke-width:1}
+#map .cor-out{fill:none;stroke:var(--ink);stroke-width:17;stroke-linejoin:round;stroke-linecap:butt;opacity:.75}
+#map .cor-in{fill:none;stroke:var(--parch);stroke-width:13.5;stroke-linejoin:round;stroke-linecap:square}
+#map .room-fill{fill:var(--parch)}
+#map .room .label{font-size:17px;text-anchor:middle}
+#map .room .sub{font-size:12px;font-family:var(--body);font-style:italic;text-anchor:middle;fill:var(--ink-soft)}
+#map .room.locked{opacity:.42}
+#map .room.open{cursor:pointer}
+#map .room.open:hover .room-fill,#map .room.open:focus-visible .room-fill{fill:var(--parch-deep)}
+#map .room:focus{outline:none}
+#map .room:focus-visible .room-edge{stroke:var(--wax);stroke-width:2.5}
+#map .glow{fill:none;stroke:none}
+#map .current .glow{fill:none;stroke:var(--wax);stroke-width:2.4;stroke-dasharray:7 6;animation:march 1.2s linear infinite}
+@keyframes march{to{stroke-dashoffset:-26}}
+#map .badge circle{fill:var(--wax)}
+#map .badge text{fill:var(--parch);font-family:var(--display);font-size:16px;text-anchor:middle}
+#map .tag{font-family:var(--body);font-style:italic;font-size:12px;fill:var(--wax);text-anchor:middle}
+#map .who{font-family:var(--body);font-style:italic;font-size:11px;text-anchor:middle;fill:var(--ink);paint-order:stroke;stroke:var(--parch);stroke-width:3px}
+#map .who.snape{fill:var(--wax);font-size:12.5px}
+#map .fp{fill:var(--ink);animation:fpfade 5s linear forwards}
+#map .fp.snape{fill:var(--wax)}
+@keyframes fpfade{0%{opacity:0}6%{opacity:.85}100%{opacity:0}}
+#map .note{font-family:var(--body);font-style:italic;font-size:12px;fill:var(--ink-soft)}
+#map.blank{display:none}
+#map.drawing .ink,#map.drawing .cor-out,#map.drawing .cor-in{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 2.6s ease-out forwards;animation-delay:var(--d,0s)}
+#map.drawing text,#map.drawing .badge{opacity:0;animation:fadein 1.2s ease forwards;animation-delay:2s}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fadein{to{opacity:1}}
+
+.closed{
+  position:relative;display:grid;place-items:center;min-height:min(560px,70vh);padding:clamp(8px,3vw,32px);transition:opacity .7s;
+}
+.closed-inner{max-width:560px;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}
+.closed .kicker{font-family:var(--sc);letter-spacing:.08em;color:var(--ink-soft);font-size:var(--step--1);margin:0}
+.closed p{margin:0}
+.folds{position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(90deg, transparent calc(33.3% - 1px), rgba(90,60,30,.18) 33.3%, transparent calc(33.3% + 2px)),
+    linear-gradient(90deg, transparent calc(66.6% - 1px), rgba(90,60,30,.18) 66.6%, transparent calc(66.6% + 2px)),
+    linear-gradient(0deg, transparent calc(50% - 1px), rgba(90,60,30,.16) 50%, transparent calc(50% + 2px));
+  transition:opacity 1s}
+.quill-form{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%}
+.quill{
+  flex:1 1 280px;min-width:0;background:transparent;border:0;border-bottom:1.5px solid var(--ink-soft);
+  padding:6px 4px;font-family:var(--body);font-style:italic;font-size:var(--step-1);color:var(--ink);text-align:center;
+}
+.quill::placeholder{color:var(--ink-faint)}
+.quill:focus{outline:none;border-bottom-color:var(--wax)}
+.btn{
+  border:1px solid var(--ink);background:var(--ink);color:var(--parch);border-radius:3px;padding:8px 18px;cursor:pointer;
+  font-family:var(--sc);letter-spacing:.04em;font-size:var(--step-0);
+}
+.btn:hover{background:var(--wax);border-color:var(--wax)}
+.btn:disabled{opacity:.45;cursor:not-allowed;background:var(--ink)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:rgba(58,35,20,.08)}
+.link{background:none;border:0;padding:0;color:var(--ink-soft);text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-style:italic}
+.insult{font-style:italic;color:var(--wax);min-height:3em;transition:opacity .4s}
+.insult.show{animation:inkin .9s ease}
+@keyframes inkin{from{opacity:0;filter:blur(3px)}to{opacity:1;filter:none}}
+.inkbloom{position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle, rgba(58,35,20,.55), rgba(58,35,20,0) 70%);opacity:0}
+.inkbloom.go{animation:bloom 1.8s ease-out forwards}
+@keyframes bloom{0%{opacity:.9;transform:scale(.2)}100%{opacity:0;transform:scale(9)}}
+
+.map-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 24px;border-top:1px solid var(--ink-faint);margin-top:10px;padding-top:12px}
+.map-foot p{margin:0;max-width:60ch}
+.next{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.next b{font-family:var(--sc);font-weight:400}
+
+/* ---------- room ---------- */
+.room-sheet{max-width:880px;margin-inline:auto;padding:clamp(18px,4vw,44px)}
+.room-sheet h2{font-family:var(--display);font-weight:400;font-size:var(--step-3);margin:0 0 .2em;text-wrap:balance;line-height:1.1}
+.room-kicker{font-family:var(--sc);color:var(--ink-soft);letter-spacing:.08em;font-size:var(--step--1);margin:0}
+.story{font-size:var(--step-1);line-height:1.45;max-width:62ch;margin:.6em 0}
+.instr{border-left:3px solid var(--wax);padding:4px 0 4px 12px;margin:1em 0 1.4em;max-width:62ch;font-style:italic}
+.puzzle{margin-block:10px 18px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.feedback{min-height:1.6em;margin:12px 0 0;font-style:italic}
+.feedback.bad{color:var(--bad)}
+.feedback.ok{color:var(--ok)}
+.hints{margin-top:18px;display:grid;gap:8px}
+.hint-card{border:1px dashed var(--ink-soft);padding:10px 14px;border-radius:3px;background:rgba(255,255,255,.18)}
+.hint-card b{font-family:var(--sc);font-weight:400;color:var(--wax);margin-right:6px}
+.shake{animation:shake .45s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+/* order */
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.step{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:rgba(255,255,255,.28);border:1px solid var(--ink-faint);border-radius:3px;padding:8px 10px;transition:background .3s}
+.step.moved{background:rgba(202,167,90,.35)}
+.step.locked{border-color:var(--ok);background:rgba(47,106,58,.12)}
+.step-n{font-family:var(--display);font-size:var(--step-1);width:1.6em;text-align:center;color:var(--wax)}
+.step-t{min-width:0}
+.step-btns{display:flex;flex-direction:column;gap:4px}
+.arrow{width:38px;height:30px;border:1px solid var(--ink-soft);background:transparent;border-radius:3px;cursor:pointer;color:var(--ink)}
+.arrow:hover:not(:disabled){background:var(--ink);color:var(--parch)}
+.arrow:disabled{opacity:.25;cursor:default}
+
+/* word puzzles */
+.words{display:grid;gap:14px}
+.wcard{display:grid;gap:6px;padding:12px 14px;border:1px solid var(--ink-faint);border-radius:3px;background:rgba(255,255,255,.22)}
+.wcard.ok{border-color:var(--ok);background:rgba(47,106,58,.1)}
+.wcard.bad{border-color:var(--bad)}
+.wcard .q{margin:0}
+.wrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.wrow input{flex:1 1 200px;min-width:0;background:rgba(255,255,255,.55);border:1px solid var(--ink-soft);border-radius:3px;padding:7px 10px;color:var(--ink);font-family:var(--body);font-size:var(--step-1)}
+.meta{font-size:var(--step--1);color:var(--ink-soft);font-style:italic}
+.mark{font-family:var(--display);font-size:var(--step-1);width:1.2em}
+.wcard.ok .mark{color:var(--ok)}
+.wcard.bad .mark{color:var(--bad)}
+.tiles{display:flex;gap:6px;flex-wrap:wrap}
+.tile{width:34px;height:40px;display:grid;place-items:center;font-family:var(--display);font-size:22px;border:1px solid var(--ink);border-radius:3px;background:var(--parch-deep);box-shadow:0 2px 0 var(--ink-soft);position:relative}
+button.tile{cursor:pointer;color:var(--ink)}
+button.tile:hover{background:var(--parch)}
+.tile sup{position:absolute;top:1px;right:3px;font-family:var(--body);font-size:11px;color:var(--wax)}
+
+/* myrtle */
+.diary{font-family:var(--body);font-size:var(--step-1);line-height:2.05;background:rgba(255,255,255,.25);padding:14px 18px;border-radius:3px;border:1px solid var(--ink-faint);
+  background-image:repeating-linear-gradient(transparent 0 calc(2.05em - 1px), rgba(35,64,111,.18) calc(2.05em - 1px) 2.05em);margin:0}
+.w{border:0;background:transparent;padding:0 2px;margin:0;border-radius:3px;cursor:pointer;color:var(--ink);font:inherit;line-height:1.2}
+.w:hover{background:rgba(58,35,20,.1)}
+.w.sel{color:var(--bad);text-decoration:line-through;text-decoration-thickness:2px;background:rgba(158,47,34,.1)}
+.w.glow{box-shadow:0 0 0 2px var(--gold);background:rgba(202,167,90,.3)}
+.counter{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--sc);color:var(--ink-soft);margin:8px 0 0}
+.fix{display:inline-flex;flex-direction:column-reverse;align-items:center;vertical-align:bottom;line-height:1.1;margin-inline:2px}
+.fix s{color:var(--bad)}
+.fix ins{text-decoration:none;color:var(--ok);font-size:.82em}
+
+/* forest */
+.trail{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.trail i{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--ink-soft);display:block}
+.trail i.done{background:var(--ok);border-color:var(--ok)}
+.trail i.now{background:var(--gold);border-color:var(--ink)}
+.trail span{font-family:var(--sc);color:var(--ink-soft);margin-left:6px}
+.done-lines{margin:0 0 12px;padding-left:1.2em;color:var(--ink-soft)}
+.done-lines b{color:var(--ok);font-weight:400;text-decoration:underline}
+.signpost{background:linear-gradient(#6a4a2c,#4b321c);color:var(--parch);border-radius:4px;padding:16px 18px;box-shadow:0 4px 0 #2e1e10;font-size:var(--step-1)}
+.signpost .blank{display:inline-block;min-width:5em;border-bottom:2px dashed var(--candle);margin-inline:4px}
+.forks{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.fork{flex:1 1 160px;border:1px solid var(--ink);background:var(--parch-deep);color:var(--ink);padding:10px 14px;border-radius:3px 18px 18px 3px;cursor:pointer;font-family:var(--body);font-size:var(--step-1);text-align:left}
+.fork:hover:not(:disabled){background:var(--ink);color:var(--parch)}
+.fork.crossed{text-decoration:line-through;opacity:.4;cursor:not-allowed}
+
+/* mirror */
+.mirror{padding:16px;border-radius:50% 50% 8px 8px / 26% 26% 8px 8px;background:linear-gradient(135deg,#8a6a2a,var(--gold) 30%,#7a5a1f 60%,var(--gold));box-shadow:0 10px 30px rgba(0,0,0,.35);max-width:620px;margin-inline:auto}
+.glass{border-radius:50% 50% 4px 4px / 24% 24% 4px 4px;background:radial-gradient(ellipse at 40% 30%, #5b6a70, #1f2a2e 75%);padding:clamp(40px,8vw,70px) clamp(18px,5vw,40px) clamp(24px,5vw,40px);min-height:180px;display:grid;place-items:center}
+.mtext{margin:0;color:var(--on-dark);font-size:var(--step-1);text-align:center;user-select:none;-webkit-user-select:none;text-shadow:0 0 12px rgba(255,255,255,.35);overflow-wrap:anywhere}
+.mtext.mode-flip{transform:scaleX(-1)}
+.mtext.mode-erised{font-family:var(--sc);letter-spacing:.08em}
+.unmirror{text-align:center;font-style:italic;margin:12px 0 0}
+
+/* solved */
+.done{display:grid;justify-items:center;text-align:center;gap:12px;padding-block:10px}
+.big-letter{width:110px;height:110px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-size:58px;color:var(--parch);
+  background:radial-gradient(circle at 35% 30%, var(--wax-hi), var(--wax) 60%, #4d0f0f);box-shadow:0 6px 18px rgba(0,0,0,.4);animation:stamp .7s cubic-bezier(.2,1.6,.4,1)}
+@keyframes stamp{from{transform:scale(2.2) rotate(-20deg);opacity:0}to{transform:none;opacity:1}}
+.review{text-align:left;width:100%;margin-top:6px}
+.review h3{font-family:var(--sc);font-weight:400;margin:0 0 6px;font-size:var(--step-1)}
+
+/* win */
+.win-sheet{max-width:820px;margin-inline:auto;padding:clamp(20px,5vw,52px);text-align:center}
+.win-sheet h2{font-family:var(--display);font-weight:400;font-size:clamp(2.2rem,1.6rem + 3vw,4rem);margin:0;line-height:1.05}
+.win-sheet .story{margin-inline:auto}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:22px 0;text-align:left}
+.stats div{border:1px solid var(--ink-faint);border-radius:3px;padding:10px 14px}
+.stats dt{font-family:var(--sc);font-size:var(--step--1);color:var(--ink-soft);letter-spacing:.05em}
+.stats dd{margin:0;font-size:var(--step-1);font-variant-numeric:tabular-nums}
+.sig{font-family:var(--hand);font-size:2rem;color:var(--ink)}
+
+/* ---------- modals ---------- */
+.modal{position:fixed;inset:0;z-index:50;display:grid;place-items:start center;background:rgba(10,7,5,.72);
+  padding-block:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-bottom,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow-y:auto}
+.modal .parchment{margin-block:auto;width:min(720px,100%);padding:clamp(18px,4vw,40px);animation:rise .6s ease}
+@keyframes rise{from{opacity:0;transform:translateY(24px) rotate(-1deg)}}
+.modal h2{font-family:var(--display);font-weight:400;font-size:var(--step-3);margin:0;line-height:1.1;text-wrap:balance}
+.notice-body{font-size:var(--step-1);margin:.6em 0}
+.notice-sign{font-family:var(--hand);font-size:1.9rem;text-align:right;margin:0}
+.twist{border-top:1px solid var(--ink-faint);padding-top:12px;margin-top:12px}
+.form{display:grid;gap:16px;margin-top:16px}
+.field{display:grid;gap:6px;border:0;padding:0;margin:0;min-width:0}
+.field>label,.field legend{font-family:var(--sc);letter-spacing:.05em;color:var(--ink-soft);padding:0;margin-bottom:6px}
+.text-in{background:rgba(255,255,255,.55);border:1px solid var(--ink-soft);border-radius:3px;padding:8px 10px;color:var(--ink);font-size:var(--step-1);font-family:var(--body);min-width:0}
+.choices{display:flex;flex-wrap:wrap;gap:8px}
+.choice{position:relative}
+.choice input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.choice span{display:block;border:1px solid var(--ink-soft);border-radius:3px;padding:6px 12px;background:rgba(255,255,255,.25);cursor:pointer}
+.choice input:checked+span{background:var(--ink);color:var(--parch);border-color:var(--ink)}
+.choice input:focus-visible+span{outline:2px solid var(--wax);outline-offset:2px}
+.house-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.diffs{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.diffs .choice span{height:100%;box-sizing:border-box}
+.diffs b{display:block;font-family:var(--sc);font-weight:400;font-size:var(--step-1)}
+.diffs small{display:block;font-size:var(--step--1);line-height:1.35;margin-top:2px}
+.teacher-grid{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.teacher-grid .btn{font-size:var(--step--1);padding:6px 12px}
+.ans{max-height:42vh;overflow:auto;border:1px solid var(--ink-faint);padding:10px 14px;background:rgba(255,255,255,.25);font-size:var(--step--1)}
+.ans h4{font-family:var(--sc);font-weight:400;margin:10px 0 4px;color:var(--wax);font-size:var(--step-0)}
+.ans h4:first-child{margin-top:0}
+.ans ol,.ans ul{margin:0;padding-left:1.3em}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+
+#toast{position:fixed;left:50%;bottom:max(20px,env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);z-index:60;opacity:0;pointer-events:none;
+  background:var(--stone-2);color:var(--candle);border:1px solid var(--gold);border-radius:4px;padding:10px 18px;max-width:min(560px,calc(100% - 32px));text-align:center;transition:.4s;font-style:italic}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* suspicion meter */
+.sus{display:block;width:96px;height:10px;border:1px solid var(--stone-3);border-radius:999px;overflow:hidden;background:rgba(0,0,0,.35);margin-top:8px}
+.sus i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--wax-hi));transition:width .6s}
+.sus.hot{border-color:var(--wax-hi);animation:pulse 1s ease-in-out infinite}
+
+/* report code */
+.report{display:inline-flex;flex-direction:column;align-items:center;gap:2px;border:1px dashed currentColor;padding:10px 20px;border-radius:4px;margin:4px 0 16px}
+.report span{font-family:var(--sc);font-size:var(--step--1);letter-spacing:.06em}
+.report b{font-family:"Courier New",ui-monospace,monospace;font-size:var(--step-2);letter-spacing:.12em;font-weight:700}
+
+/* caught scene */
+.caught-sheet{max-width:820px;margin-inline:auto;padding:clamp(20px,5vw,52px);text-align:center;color:var(--on-dark);
+  background:radial-gradient(ellipse at 50% 0%, rgba(184,64,46,.16), transparent 60%), linear-gradient(var(--stone-2), var(--stone));
+  border:1px solid var(--stone-3);border-radius:4px;box-shadow:0 18px 50px rgba(0,0,0,.7)}
+.caught-sheet .room-kicker{color:var(--on-dark-soft)}
+.caught-sheet h2{font-family:var(--display);font-weight:400;font-size:clamp(2.4rem,1.6rem + 3vw,4rem);margin:0;line-height:1.05;color:var(--wax-hi)}
+.scene{display:grid;gap:14px;margin:18px auto;max-width:60ch;text-align:left}
+.scene p{margin:0;font-size:var(--step-1);opacity:0;animation:inkin 1.2s ease forwards;animation-delay:calc(var(--i) * 2s + .4s)}
+.scene p.map-line{font-style:italic;color:var(--candle);border-left:2px solid var(--gold);padding-left:12px}
+.caught-after{opacity:0;animation:fadein 1s ease forwards;animation-delay:10.6s}
+.instant .scene p,.instant .caught-after{animation:none;opacity:1}
+.stamp{display:inline-block;border:3px double var(--wax-hi);color:var(--wax-hi);font-family:var(--display);font-size:var(--step-2);padding:4px 16px;transform:rotate(-4deg);margin:8px 0 4px}
+.caught-sheet .stats div{border-color:var(--stone-3);background:rgba(0,0,0,.2)}
+.caught-sheet .stats dt{color:var(--on-dark-soft)}
+.caught-sheet .quill{color:var(--on-dark);border-bottom-color:var(--on-dark-soft)}
+.caught-sheet .quill::placeholder{color:var(--on-dark-soft)}
+.caught-sheet .btn{background:var(--wax);border-color:var(--wax);color:var(--parch)}
+.caught-sheet .link{color:var(--on-dark-soft)}
+
+/* alerts and events */
+.modal .alert{border-top:6px solid var(--wax);width:min(560px,100%)}
+.ev-timer{font-family:var(--display);font-size:var(--step-2);color:var(--wax);font-variant-numeric:tabular-nums}
+.evq{display:grid;gap:8px;padding:12px 0;border-top:1px solid var(--ink-faint)}
+.evq p{margin:0}
+.evopts{display:flex;flex-wrap:wrap;gap:8px}
+.evopt{border:1px solid var(--ink-soft);background:rgba(255,255,255,.3);border-radius:3px;padding:6px 12px;cursor:pointer;font:inherit;color:var(--ink);text-align:left}
+.evopt:hover:not(:disabled){background:rgba(58,35,20,.1)}
+.evopt[aria-pressed="true"]{background:var(--ink);color:var(--parch)}
+.evopt.right{background:var(--ok);color:var(--parch);border-color:var(--ok)}
+.evopt.wrong{background:var(--bad);color:var(--parch);border-color:var(--bad)}
+.evopt:disabled{cursor:default}
+
+/* results board */
+.tp-h{font-family:var(--sc);font-weight:400;font-size:var(--step-1);margin:20px 0 4px;color:var(--wax)}
+.tablewrap{overflow-x:auto;margin:8px 0}
+.results{width:100%;border-collapse:collapse;color:var(--ink);font-variant-numeric:tabular-nums;font-size:var(--step--1)}
+.results th,.results td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--ink-faint);white-space:nowrap}
+.results th{font-family:var(--sc);font-weight:400;color:var(--ink-soft)}
+.results .esc{color:var(--ok)}
+.results .cau{color:var(--bad)}
+.results .x{border:0;background:none;color:var(--bad);cursor:pointer;font-size:1.1em}
+.res-form{display:flex;flex-wrap:wrap;gap:8px}
+.res-form input{flex:1 1 160px}
+.modal .board{width:min(1200px,100%)}
+.board .results{font-size:var(--step-1)}
+.board h2{font-size:clamp(2rem,1.4rem + 2.6vw,3.4rem)}
+.cup{display:grid;gap:12px;margin:18px 0 26px}
+.cup-row{display:grid;grid-template-columns:minmax(110px,190px) 1fr 4ch;gap:14px;align-items:center;font-size:var(--step-1)}
+.cup-row b{font-family:var(--sc);font-weight:400}
+.cup-row span{text-align:right;font-variant-numeric:tabular-nums}
+.cup-bar{height:24px;border-radius:3px;min-width:4px;transition:width .8s}
+details.ans-wrap summary{cursor:pointer;font-family:var(--sc);color:var(--wax);font-size:var(--step-1);margin:20px 0 8px}
+
+@media (max-width:640px){
+  .brand-name{font-size:var(--step-0)}
+  .controls{margin-left:0}
+  .game-info{margin-inline:0;width:100%;justify-content:space-between}
+  .step{grid-template-columns:1fr auto}
+  .step-n{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+</style>
+
+<header id="bar">
+  <div class="brand">
+    <button class="seal" id="seal" type="button" aria-label="Wax seal">M</button>
+    <span class="brand-name" data-t="brand">Snape's Detention</span>
+  </div>
+  <div class="game-info" id="game-info" hidden>
+    <div class="stat"><span class="stat-l" data-t="timerL">Snape returns in</span><span id="timer">45:00</span></div>
+    <div class="stat"><span class="stat-l" data-t="pointsL">House points</span><span class="stat-v" id="points">100</span></div>
+    <div class="stat"><span class="stat-l" data-t="lettersL">Password</span><span class="tray" id="tray"></span></div>
+    <div class="stat"><span class="stat-l" data-t="susL">Snape's suspicion</span><span class="sus" id="sus"><i id="sus-fill"></i></span></div>
+  </div>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang="no" aria-pressed="false">NO</button>
+    </div>
+    <button type="button" class="tog" id="music-btn" aria-pressed="false">♪ <span></span></button>
+    <button type="button" class="tog" id="sfx-btn" aria-pressed="true"><span></span></button>
+  </div>
+</header>
+
+<main>
+  <!-- MAP -->
+  <section class="view" id="view-map">
+    <div class="parchment map-sheet">
+      <div class="map-head" id="map-head">
+        <p class="presents" data-t="presents">Messrs Moony, Wormtail, Padfoot and Prongs are proud to present</p>
+        <h1 data-t="mapTitle">The Marauder's Map</h1>
+      </div>
+      <div class="map-wrap">
+        <svg id="map" viewBox="0 0 1000 640" role="img" aria-labelledby="map-title"><title id="map-title">Map of Hogwarts</title></svg>
+        <div class="folds" id="folds"></div>
+        <div class="inkbloom" id="bloom"></div>
+        <div class="closed" id="closed">
+          <div class="closed-inner">
+            <p class="kicker" data-t="closedKicker"></p>
+            <p data-t="closedIntro"></p>
+            <form class="quill-form" id="phrase-form" autocomplete="off">
+              <label class="sr" for="phrase" data-t="closedLabel"></label>
+              <p style="width:100%;font-style:italic" aria-hidden="true" data-t="closedLabel"></p>
+              <input class="quill" id="phrase" type="text" spellcheck="false" data-tph="closedPh">
+              <button class="btn" type="submit" data-t="closedBtn"></button>
+            </form>
+            <p class="insult" id="insult" aria-live="polite"></p>
+          </div>
+        </div>
+      </div>
+      <div class="map-foot" id="map-foot" hidden>
+        <p id="objective"></p>
+        <div class="next" id="next"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROOM -->
+  <section class="view" id="view-room" hidden>
+    <article class="parchment room-sheet">
+      <p class="room-kicker" id="room-kicker"></p>
+      <h2 id="room-name"></h2>
+      <p class="story" id="room-story"></p>
+      <div id="room-play">
+        <p class="instr" id="room-instr"></p>
+        <div class="puzzle" id="puzzle"></div>
+        <div class="actions">
+          <button class="btn" type="button" id="check-btn" data-t="check">Check</button>
+          <button class="btn ghost" type="button" id="hint-btn"></button>
+          <button class="btn ghost" type="button" id="back-btn" data-t="back">Back to the map</button>
+        </div>
+        <p class="feedback" id="feedback" aria-live="polite"></p>
+        <div class="hints" id="hints"></div>
+      </div>
+      <div class="done" id="room-done" hidden></div>
+    </article>
+  </section>
+
+  <!-- WIN -->
+  <section class="view" id="view-win" hidden>
+    <article class="parchment win-sheet">
+      <p class="room-kicker" data-t="winKicker"></p>
+      <h2 data-t="winTitle">Mischief managed!</h2>
+      <p class="story" id="win-body"></p>
+      <dl class="stats" id="stats"></dl>
+      <div class="report" id="win-code"></div>
+      <p class="sig">Moony, Wormtail, Padfoot &amp; Prongs</p>
+      <form class="quill-form" id="wipe-form" autocomplete="off" style="margin-top:18px">
+        <p style="width:100%;font-style:italic;margin:0" data-t="wipeLabel"></p>
+        <label class="sr" for="wipe" data-t="wipeLabel"></label>
+        <input class="quill" id="wipe" type="text" spellcheck="false" data-tph="wipePh">
+        <button class="btn" type="submit" data-t="wipeBtn"></button>
+      </form>
+    </article>
+  </section>
+<!-- CAUGHT -->
+<section class="view" id="view-caught" hidden>
+  <article class="caught-sheet" id="caught-sheet">
+    <p class="room-kicker" data-t="caughtKicker"></p>
+    <h2 data-t="caughtTitle"></h2>
+    <div class="scene" id="scene"></div>
+    <button class="link" type="button" id="scene-skip" data-t="skipScene"></button>
+    <div class="caught-after">
+      <p class="stamp">Mischief NOT managed</p>
+      <dl class="stats" id="caught-stats"></dl>
+      <div class="report" id="caught-code"></div>
+      <form class="quill-form" id="wipe-form2" autocomplete="off" style="margin-top:12px">
+        <p style="width:100%;font-style:italic;margin:0" data-t="wipeLabel"></p>
+        <label class="sr" for="wipe2" data-t="wipeLabel"></label>
+        <input class="quill" id="wipe2" type="text" spellcheck="false" data-tph="wipePh">
+        <button class="btn" type="submit" data-t="wipeBtn"></button>
+      </form>
+    </div>
+  </article>
+</section>
+
+</main>
+
+<!-- detention notice + setup -->
+<div class="modal" id="modal-notice" hidden>
+  <div class="parchment" role="dialog" aria-modal="true" aria-labelledby="notice-title">
+    <p class="room-kicker" data-t="noticeKicker"></p>
+    <h2 id="notice-title" data-t="noticeTitle"></h2>
+    <p class="notice-body" data-t="noticeBody"></p>
+    <p class="notice-sign" data-t="noticeSign"></p>
+    <p class="twist" data-t="noticeTwist"></p>
+    <form class="form" id="setup-form" autocomplete="off">
+      <div class="field">
+        <label for="team" data-t="setupTeam"></label>
+        <input class="text-in" id="team" type="text" maxlength="40" data-tph="setupTeamPh">
+      </div>
+      <fieldset class="field">
+        <legend data-t="setupHouse"></legend>
+        <div class="choices" id="houses"></div>
+      </fieldset>
+      <fieldset class="field">
+        <legend data-t="setupDiff"></legend>
+        <div class="diffs" id="diffs"></div>
+      </fieldset>
+      <div><button class="btn" type="submit" data-t="setupStart"></button></div>
+    </form>
+  </div>
+</div>
+
+<!-- suspicion alerts -->
+<div class="modal" id="modal-alert" hidden>
+  <div class="parchment alert" role="alertdialog" aria-modal="true" aria-labelledby="al-title">
+    <p class="room-kicker" id="al-kicker"></p>
+    <h2 id="al-title"></h2>
+    <p class="notice-body" id="al-body"></p>
+    <button class="btn" type="button" id="al-btn"></button>
+  </div>
+</div>
+
+<!-- character events -->
+<div class="modal" id="modal-event" hidden>
+  <div class="parchment" role="dialog" aria-modal="true" aria-labelledby="ev-title">
+    <div class="row"><p class="room-kicker" id="ev-kicker" style="margin:0"></p><span class="ev-timer" id="ev-timer"></span></div>
+    <h2 id="ev-title"></h2>
+    <p class="notice-body" id="ev-story"></p>
+    <p class="instr" id="ev-instr"></p>
+    <div id="ev-qs"></div>
+    <p class="feedback" id="ev-fb" aria-live="polite"></p>
+    <div class="actions" id="ev-actions"></div>
+  </div>
+</div>
+
+<!-- results board for the projector -->
+<div class="modal" id="modal-board" hidden>
+  <div class="parchment board" role="dialog" aria-modal="true" aria-labelledby="bd-title">
+    <div class="row"><h2 id="bd-title" data-t="boardTitle"></h2><button class="btn ghost" type="button" data-close data-t="close"></button></div>
+    <p class="room-kicker" data-t="boardSub"></p>
+    <div class="cup" id="bd-cup"></div>
+    <div class="tablewrap"><table class="results" id="bd-table"></table></div>
+  </div>
+</div>
+
+<!-- teacher PIN -->
+<div class="modal" id="modal-pin" hidden>
+  <div class="parchment" role="dialog" aria-modal="true" aria-labelledby="pin-title" style="width:min(420px,100%)">
+    <h2 id="pin-title" data-t="pinTitle"></h2>
+    <form class="form" id="pin-form" autocomplete="off">
+      <div class="field">
+        <label for="pin" data-t="pinLabel"></label>
+        <input class="text-in" id="pin" type="password" inputmode="numeric">
+      </div>
+      <p class="feedback bad" id="pin-msg"></p>
+      <div class="row"><button class="btn" type="submit" data-t="pinBtn"></button><button class="btn ghost" type="button" data-close data-t="close"></button></div>
+    </form>
+  </div>
+</div>
+
+<!-- teacher panel -->
+<div class="modal" id="modal-teacher" hidden>
+  <div class="parchment" role="dialog" aria-modal="true" aria-labelledby="tp-title">
+    <div class="row"><h2 id="tp-title" data-t="tTitle"></h2><button class="btn ghost" type="button" data-close data-t="close"></button></div>
+    <h3 class="tp-h" data-t="tThis"></h3>
+    <p id="tp-status" style="margin:0"></p>
+    <div class="teacher-grid" id="tp-btns"></div>
+    <div class="field" style="margin:10px 0">
+      <label for="tp-diff" data-t="tDiff"></label>
+      <select class="text-in" id="tp-diff"><option value="easy"></option><option value="medium"></option><option value="hard"></option></select>
+    </div>
+    <h3 class="tp-h" data-t="tResults"></h3>
+    <p class="meta" style="margin:0 0 8px" data-t="tResultsHelp"></p>
+    <form class="res-form" id="res-form" autocomplete="off">
+      <label class="sr" for="res-code" data-t="tCode"></label>
+      <input class="text-in" id="res-code" type="text" maxlength="14" spellcheck="false" data-tph="tCodePh">
+      <label class="sr" for="res-team" data-t="tTeam"></label>
+      <input class="text-in" id="res-team" type="text" maxlength="40" data-tph="tTeam">
+      <button class="btn" type="submit" data-t="tAdd"></button>
+    </form>
+    <p class="feedback" id="res-msg"></p>
+    <div class="tablewrap"><table class="results" id="res-table"></table></div>
+    <div class="teacher-grid"><button class="btn" type="button" id="board-btn" data-t="tShowBoard"></button><button class="btn ghost" type="button" id="res-clear"></button></div>
+    <details class="ans-wrap"><summary id="tp-ans-h"></summary><div class="ans" id="tp-ans"></div></details>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ================= data ================= */
+const DATA = (function(b64, key){
+  const bin = atob(b64), u = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i) ^ key.charCodeAt(i % key.length);
+  return JSON.parse(new TextDecoder().decode(u));
+})('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', 'Nox-Lumos-Alohomora');
+
+const ROOMS = ['potions','hall','bathroom','library','forest','mirror','office'];
+const GAME = 45 * 60000;
+const COST = {easy:0, medium:5, hard:10};
+const STRICT = {easy:3, medium:5, hard:10}; // library clues and the final door always cost points
+const STORE = 'snapes-detention-v1';
+
+/* ================= text ================= */
+const T = {
+en:{
+  brand:"Snape's Detention",
+  timerL:'Snape returns in', pointsL:'House points', lettersL:'Password',
+  musicOn:'Music on', musicOff:'Music off', sfxOn:'Sounds on', sfxOff:'Sounds off',
+  presents:'Messrs Moony, Wormtail, Padfoot and Prongs are proud to present',
+  mapTitle:"The Marauder's Map",
+  closedKicker:"Snape's dungeon · seven o'clock in the evening",
+  closedIntro:"Professor Snape has given you detention and locked you in his dungeon classroom. While he is away, you search his drawer of confiscated things and find an old, completely blank piece of parchment. It looks like nothing at all… unless you know the right words.",
+  closedLabel:'Touch the parchment with your wand and say the words:',
+  closedPh:'Write with your quill…',
+  closedBtn:'Speak',
+  insults:[
+    'Mr Moony presents his compliments and suggests you try again with a little more mischief.',
+    'Mr Padfoot would like to know whether you have ever used your brain before.',
+    'Mr Prongs agrees with Mr Padfoot and adds that you should go back to bed.',
+    'Mr Wormtail bids you good evening and advises you to stop wasting good parchment.',
+    'Mr Moony is beginning to suspect that you are a prefect. Prefects are not welcome here.'
+  ],
+  noticeKicker:'Found pinned to the classroom door',
+  noticeTitle:'Detention',
+  noticeBody:'For talking in class, melting two cauldrons and being generally insufferable, you will serve detention in my dungeon classroom tonight. I have locked the door. I will return in exactly forty-five minutes, and I expect to find you sitting at your desks, doing nothing.',
+  noticeSign:'Professor S. Snape',
+  noticeTwist:"But the map knows more than Snape thinks. It shows a secret passage out of the classroom. It shows Snape's footprints in the Staff Room. And it shows that your names are on a detention list in Snape's office, which is sealed with a password charm. Long ago, the Marauders discovered the password and hid its six letters around the castle. Find all six letters, open Snape's office and burn the list before his footprints reach the dungeons. But be careful: wild guessing makes noise, and noise makes Snape suspicious.",
+  setupTeam:'Your name or team name', setupTeamPh:'For example: The Night Owls', setupHouse:'Your house', setupDiff:'Difficulty', setupStart:'Start the escape',
+  teamDefault:'Mystery Team',
+  houses:{gryffindor:'Gryffindor', hufflepuff:'Hufflepuff', ravenclaw:'Ravenclaw', slytherin:'Slytherin'},
+  diffs:{
+    easy:{name:'Easy', desc:"Most hints are free, but library clues, mirror hints and help at the final door cost 3 points. You don't need to know the books or films."},
+    medium:{name:'Medium', desc:'Harder English. Each hint costs 5 house points.'},
+    hard:{name:'Hard', desc:'Advanced English and real Harry Potter knowledge. Each hint costs 10 house points.'}
+  },
+  objective:"Find the six letters of the password, then open Snape's Office before his footprints reach the dungeons.",
+  nextStop:'Next stop:', enter:'Enter', review:'Visit again',
+  lockedRoom:'This place is still hidden on the map. Finish {room} first.',
+  staffRoom:'Staff Room', dungeons:'The Dungeons', passage:'secret passage', here:'next stop', blackLake:'to the Black Lake',
+  check:'Check', hint:'Get a hint', hintFree:'free', hintCost:'costs {n} points', noHints:'No more hints', back:'Back to the map',
+  hintN:'Hint {n}:',
+  reveal:{
+    order:'The map has pulled the first step into place.',
+    riddles:'The first letter of each answer is now shown.',
+    errors:'One of the mistakes is glowing gold.',
+    anagram:'The first letter of each word is now shown.',
+    path:'At every signpost, one wrong path is crossed out.',
+    mirror:'For a moment, the mirror shows its message the right way round.',
+    door:'Small numbers have appeared on the letters. They show the order of the password.'
+  },
+  roomKicker:'Room {n} of 6', roomKickerFinal:'The final door',
+  solvedKicker:'Solved',
+  letterFound:'A letter appears in the air: {l}', letterNote:'It has been added to your password letters at the top of the page.',
+  orderSome:'{n} of {total} steps are in the right place. Keep going!',
+  someCorrect:'{n} of {total} answers are correct. Keep trying!',
+  emptyAns:'Write an answer first.',
+  errorsFound:'You have found {n} of {total} mistakes.', errorsExtra:'{n} of the words you marked are actually correct.',
+  errorsCount:'Mistakes to find: {n}', errorsMarked:'Marked: {n}',
+  correctedDiary:"Myrtle's diary, corrected",
+  lettersN:'{n} letters', startsWith:'Starts with {l}', clue:'Clue', buyClue:'Buy a clue for this word ({n} points)',
+  pathProgress:'Signpost {k} of {n}',
+  pathWrong:'Wrong turn! An Acromantula chased you all the way back to the edge of the forest. Start again.',
+  pathGood:'Correct! You walk deeper into the forest…',
+  forestPath:'Your safe path through the forest',
+  wrong:'That is not right. Try again!',
+  yourAnswer:'Your answer', password:'Password', yourLetters:'Your six letters',
+  doorClue:{
+    easy:'The password is one English word. It means “at all times” or “forever”.',
+    medium:'The password is one English word. It means “at all times” or “forever”.',
+    hard:"Clue: it is Snape's answer when Dumbledore asks him, “After all this time?”"
+  },
+  doorWrong:'The door stays shut, and a jar of eyeballs blinks at you. Try again.',
+  susL:"Snape's suspicion",
+  minute1:'1 minute', minuteN:'{n} minutes',
+  alertKicker:"The Marauder's Map",
+  warnTitle:'Careful!', warnBody:"The map trembles in your hands. Snape's footprints have stopped in the corridor… he's listening. Wild guessing makes noise. Think carefully before you answer, or he will come back sooner.", warnBtn:"We'll be quiet",
+  penTitle:'Snape heard you!', penBody:"Somewhere above you, a door slams. Snape's footprints are moving faster now. All that wild guessing made too much noise, and you have lost {t}.", penBtn:'Keep going',
+  caughtKicker:'The dungeon corridor · time is up', caughtTitle:'Caught!', skipScene:'Skip the scene',
+  caughtLines:[
+    'The torches flicker. Behind you, a door creaks open.',
+    '“Going somewhere?” Professor Snape steps out of the shadows. His black eyes move from your faces to the old parchment in your hands.',
+    '“A secret passage. Six little letters. And my office.” His lip curls. “Did you really think I would not work it out?”',
+    'He taps the parchment with his wand. Spidery words appear: “Mr Prongs wishes Professor Snape a long and boring evening of marking homework.”',
+    'Snape goes pale with rage. The ink fades, and the map is blank again. “Detention,” he whispers. “Every night. Until Christmas.”'
+  ],
+  lettersFound:'Letters found', reportL:'Report code for your teacher',
+  mirrorHint1:"Mirrors don't show things exactly as they are. Look closely at the letters. Is anything about them unusual?",
+  mirrorHint2:{flip:'Everything is the wrong way round, like writing seen in a mirror. Read each line from right to left.', reverse:'Every word is spelled backwards. Read each word from its last letter to its first.', erised:'The whole message is written backwards, and the spaces are in the wrong places. Start with the very last letter and read towards the beginning.'},
+  mirrorBegins:'The message begins: “{w} …”',
+  ev:{
+    hagrid:{name:'Rubeus Hagrid', kicker:'On the map: someone very big is coming your way', story:"A huge shadow fills the corridor. It's Hagrid, carrying a sack that wriggles. “Blimey! Wha' are you lot doin' out o' bed?” He scratches his beard. “Tell yeh what. Help me with me creatures, an' I'll show yeh a shortcut.”", instr:"Answer Hagrid's questions before he loses patience. Every correct answer gives you 1 extra minute. You only get one try!", reward:'Hagrid shows you a shortcut behind a tapestry. You win {t} of extra time!', none:'Hagrid shrugs. “Never mind. Off yeh go, then.” No shortcut this time.', skip:'Hide behind a statue'},
+    dumbledore:{name:'Albus Dumbledore', kicker:'On the map: someone is humming in the corridor', story:'Albus Dumbledore steps out from behind a suit of armour. He does not seem at all surprised to see you. “Ah. Wandering the castle at night is an excellent way to learn things,” he says, eyes twinkling. “Let us see what you have learned.”', instr:"Answer Dumbledore's questions. Every correct answer gives you 10 house points. You only get one try!", reward:'Dumbledore smiles. “{n} points to {house}, for curiosity.” Then he walks away, humming.', none:'Dumbledore smiles kindly. “Ah well. The night is long.” He walks away, humming.', skip:'Slip away quietly'}
+  },
+  evAnswer:'Answer', evContinue:'Continue', evSkipped:'You hide until the footsteps fade away.', evTimeout:'Time is up!', evScore:'{n} of {total} correct.',
+  tThis:'This computer', tResults:'Class results',
+  tResultsHelp:"When a team finishes (escaped or caught), their screen shows a report code. Type it here with the team name. Results are saved on this computer only.",
+  tCode:'Report code', tCodePh:'Report code, e.g. 4K7-QX2-M9A', tTeam:'Team name', tAdd:'Add',
+  tBadCode:'That code is not valid. Check it for typos.', tAdded:'Added {team}.', tShowBoard:'Show on the projector',
+  tClear:'Clear all results', tClearSure:'Click again to clear', tNoResults:'No results yet.', tCodeHere:'Report code: {c}', tRemove:'Remove',
+  col:{team:'Team', house:'House', level:'Level', result:'Result', left:'Time left', points:'Points', hints:'Hints'},
+  resEscaped:'Escaped', resCaught:'Caught · {n}/6 letters',
+  boardTitle:'The House Cup', boardSub:'House points from every team in the class',
+  timeUpTitle:'Snape is back!',
+  timeUpBody:'Cold footsteps echo down the dungeon stairs. “Detention,” says Snape softly. “Every night. Until Christmas.” Your time is up, but you can keep going and finish the escape. You will not get a time bonus.',
+  keepGoing:'Keep going',
+  warn15:'The map shows Snape leaving the Staff Room… 15 minutes left!',
+  warn5:'Snape is on the dungeon stairs! 5 minutes left!',
+  winKicker:"Snape's office · the fire is burning",
+  winTitle:'Mischief managed!',
+  winBody:"You slip into Snape's office, find the detention list and drop it into the fire. When Snape comes back, the dungeon is empty and there is no record of any detention at all.",
+  winLate:'You were a little late, but the list still burned. Snape will never be able to prove a thing.',
+  stats:{team:'Team', house:'House', diff:'Difficulty', used:'Time used', left:'Time left', points:'House points', hints:'Hints used'},
+  wipeLabel:'To wipe the map clean, tap it with your wand and say the words:',
+  wipePh:'Mischief managed', wipeBtn:'Wipe the map',
+  pinTitle:'Teacher access', pinLabel:'Teacher PIN', pinBtn:'Open', pinWrong:'Wrong PIN.', close:'Close',
+  tTitle:'Teacher panel', tDiff:'Difficulty for this computer',
+  tStatus:'{team} ({house}) · {diff} · rooms solved: {n}/7 · hints used: {h}',
+  tNotStarted:'The game has not started on this computer yet.',
+  tAnswers:'Answers · {diff}',
+  tSolve:'Solve next room', tSolveAll:'Solve rooms 1–6', tPlus:'+5 minutes', tMinus:'−5 minutes', tPause:'Pause timer', tResume:'Resume timer',
+  tPtsUp:'+10 points', tPtsDown:'−10 points', tReset:'Reset this computer', tResetSure:'Click again to reset',
+  up:'Move up', down:'Move down',
+  rooms:{
+    potions:{name:'Potions Classroom', story:"You start in Snape's dungeon classroom. On the blackboard, Snape has written the recipe for a Draught of Silent Footsteps, but someone has mixed up the steps. Brew it correctly and you can sneak through the castle without a sound. The steam will show you the first letter.", instr:'Put the steps in the correct order. Use the arrows to move a step up or down. Then press Check.', hint:'Look for time words like first, once, as soon as, while, when and finally. They tell you what must happen before something else can happen.'},
+    hall:{name:'The Great Hall', story:"The Great Hall is dark and empty. Only the Sorting Hat is left, sitting on its stool. “Answer my riddles,” it yawns, “and I'll tell you a secret.”", instr:'Solve each riddle. Write one word or name in each box. Then press Check.', hint:'Read each riddle slowly and find the most important words. Every answer is one English word or a name.'},
+    bathroom:{name:"Moaning Myrtle's Bathroom", story:"Moaning Myrtle is crying again. Her diary fell into a toilet, and the water has mixed up her grammar. “If you fix my diary,” she sniffs, “I'll tell you the next letter. Nobody ever helps poor Myrtle!”", instr:'Click every word that is wrong. Click it again to unmark it. When you think you have found all the mistakes, press Check.', hint:'Check the verbs first: past tense, irregular verbs (go → went) and agreement (they was → they were). Then look for words that are easy to mix up, like there/their, its/it\'s and for/since.'},
+    library:{name:'The Library', story:'Madam Pince is asleep at her desk. In the Restricted Section, a curse has scrambled the words on the spines of some old books. Unscramble them and a letter will fall out of the last book.', instr:'Unscramble the letters to find each word. Stuck? You can buy a clue for a word, but it costs house points. Then press Check.', hint:'Start with the vowels (A, E, I, O, U, Y) and put consonants around them. Look for common English letter patterns like -ing, -le, -ble, -er and -et, and think about the place you are in.'},
+    forest:{name:'The Forbidden Forest', story:'A narrow path leads into the Forbidden Forest. At every fork there is a signpost with an unfinished sentence. Only the grammatically correct path is safe. The others lead straight to the Acromantulas.', instr:"Choose the word or words that make the sentence correct. One wrong turn and you're back at the edge of the forest!", hint:'Read the whole sentence with each option. Look for time words like last night, since, by the time and if. They tell you which tense to use.'},
+    mirror:{name:'The Mirror of Erised', story:'In an unused classroom stands a tall, golden mirror on clawed feet. Strange words shimmer in the dark glass, and the mirror seems to be waiting for an answer.', instr:'Work out what the mirror is saying, type your answer to its question and press Check.', hint:''},
+    office:{name:"Snape's Office", story:"You are back in the dungeons, outside Snape's office. Jars of slimy things stare at you from the shelves. The door is sealed with a password charm, and you have six letters.", instr:'Put the six letters in the right order to make one English word, and say the password. You can click the letters to type them.', hint:''}
+  }
+},
+no:{
+  brand:'Gjensitting hos Snape',
+  timerL:'Snape kommer om', pointsL:'Huspoeng', lettersL:'Passord',
+  musicOn:'Musikk på', musicOff:'Musikk av', sfxOn:'Lyder på', sfxOff:'Lyder av',
+  presents:'Herr Måne, Ormsvans, Labbetuss og Gevir er stolte av å presentere',
+  mapTitle:"The Marauder's Map",
+  closedKicker:'Snapes fangehull · klokka sju om kvelden',
+  closedIntro:'Professor Snape har gitt dere gjensitting og låst dere inne i klasserommet sitt i fangehullet. Mens han er borte, leter dere i skuffen hans med konfiskerte ting og finner et gammelt, helt blankt pergament. Det ser ut som ingenting… med mindre man kjenner de riktige ordene.',
+  closedLabel:'Rør ved pergamentet med tryllestaven og si ordene (på engelsk):',
+  closedPh:'Skriv med fjærpennen…',
+  closedBtn:'Si ordene',
+  insults:[
+    'Herr Måne hilser og foreslår at du prøver igjen, med litt mer ugagn.',
+    'Herr Labbetuss lurer på om du noen gang har brukt hjernen før.',
+    'Herr Gevir er enig med herr Labbetuss og legger til at du bør gå og legge deg.',
+    'Herr Ormsvans ønsker deg god kveld og ber deg slutte å kaste bort godt pergament.',
+    'Herr Måne begynner å mistenke at du er prefekt. Prefekter er ikke velkomne her.'
+  ],
+  noticeKicker:'Funnet på klasseromsdøra',
+  noticeTitle:'Gjensitting',
+  noticeBody:'For å ha snakket i timen, smeltet to gryter og generelt vært uutholdelige, skal dere sitte gjen i klasserommet mitt i fangehullet i kveld. Jeg har låst døra. Jeg kommer tilbake om nøyaktig førtifem minutter, og da forventer jeg at dere sitter ved pultene og ikke gjør noe som helst.',
+  noticeSign:'Professor S. Snape',
+  noticeTwist:'Men kartet vet mer enn Snape tror. Det viser en hemmelig gang ut av klasserommet. Det viser Snapes fotspor på lærerværelset. Og det viser at navnene deres står på en gjensittingsliste på Snapes kontor, som er forseglet med en passordbesvergelse. For lenge siden fant marodørene ut hva passordet er, og gjemte de seks bokstavene rundt omkring i slottet. Finn alle seks bokstavene, åpne Snapes kontor og brenn lista før fotsporene hans når fangehullene. Men vær forsiktige: Vill gjetting lager støy, og støy gjør Snape mistenksom.',
+  setupTeam:'Navnet ditt eller lagnavn', setupTeamPh:'For eksempel: The Night Owls', setupHouse:'Huset ditt', setupDiff:'Vanskelighetsgrad', setupStart:'Start flukten',
+  teamDefault:'Mystery Team',
+  houses:{gryffindor:'Griffing', hufflepuff:'Håsblås', ravenclaw:'Ravnklo', slytherin:'Smygard'},
+  diffs:{
+    easy:{name:'Lett', desc:'De fleste hint er gratis, men ledetråder i biblioteket, hint ved speilet og hjelp ved den siste døra koster 3 poeng. Du trenger ikke å kunne bøkene eller filmene.'},
+    medium:{name:'Middels', desc:'Vanskeligere engelsk. Hvert hint koster 5 huspoeng.'},
+    hard:{name:'Vanskelig', desc:'Avansert engelsk og ekte Harry Potter-kunnskap. Hvert hint koster 10 huspoeng.'}
+  },
+  objective:'Finn de seks bokstavene i passordet, og åpne Snapes kontor før fotsporene hans når fangehullene.',
+  nextStop:'Neste stopp:', enter:'Gå inn', review:'Gå inn igjen',
+  lockedRoom:'Dette stedet er fortsatt skjult på kartet. Løs {room} først.',
+  staffRoom:'Lærerværelset', dungeons:'Fangehullene', passage:'hemmelig gang', here:'neste stopp', blackLake:'til Svartsjøen',
+  check:'Sjekk', hint:'Få et hint', hintFree:'gratis', hintCost:'koster {n} poeng', noHints:'Ingen flere hint', back:'Tilbake til kartet',
+  hintN:'Hint {n}:',
+  reveal:{
+    order:'Kartet har flyttet det første steget på plass.',
+    riddles:'Den første bokstaven i hvert svar vises nå.',
+    errors:'En av feilene lyser gull.',
+    anagram:'Den første bokstaven i hvert ord vises nå.',
+    path:'Ved hvert skilt er én feil sti krysset ut.',
+    mirror:'Et øyeblikk viser speilet beskjeden riktig vei.',
+    door:'Små tall har dukket opp på bokstavene. De viser rekkefølgen i passordet.'
+  },
+  roomKicker:'Rom {n} av 6', roomKickerFinal:'Den siste døra',
+  solvedKicker:'Løst',
+  letterFound:'En bokstav dukker opp i lufta: {l}', letterNote:'Den er lagt til passordbokstavene øverst på siden.',
+  orderSome:'{n} av {total} steg står på riktig plass. Fortsett!',
+  someCorrect:'{n} av {total} svar er riktige. Prøv igjen!',
+  emptyAns:'Skriv et svar først.',
+  errorsFound:'Dere har funnet {n} av {total} feil.', errorsExtra:'{n} av ordene dere har markert, er faktisk riktige.',
+  errorsCount:'Feil å finne: {n}', errorsMarked:'Markert: {n}',
+  correctedDiary:'Huldas dagbok, rettet',
+  lettersN:'{n} bokstaver', startsWith:'Begynner på {l}', clue:'Ledetråd', buyClue:'Kjøp en ledetråd til dette ordet ({n} poeng)',
+  pathProgress:'Skilt {k} av {n}',
+  pathWrong:'Feil sving! En kjempeedderkopp jaget dere helt tilbake til skogkanten. Begynn på nytt.',
+  pathGood:'Riktig! Dere går dypere inn i skogen…',
+  forestPath:'Den trygge stien gjennom skogen',
+  wrong:'Det er ikke riktig. Prøv igjen!',
+  yourAnswer:'Svaret ditt', password:'Passord', yourLetters:'De seks bokstavene deres',
+  doorClue:{
+    easy:'Passordet er ett engelsk ord. Det betyr «hele tiden» eller «for alltid».',
+    medium:'Passordet er ett engelsk ord. Det betyr «hele tiden» eller «for alltid».',
+    hard:'Ledetråd: Det er Snapes svar når Dumbledore spør: «After all this time?»'
+  },
+  doorWrong:'Døra forblir stengt, og et glass med øyeepler blunker til dere. Prøv igjen.',
+  susL:'Snapes mistanke',
+  minute1:'1 minutt', minuteN:'{n} minutter',
+  alertKicker:'Kartet',
+  warnTitle:'Forsiktig!', warnBody:'Kartet skjelver i hendene deres. Snapes fotspor har stoppet i korridoren … han lytter. Vill gjetting lager støy. Tenk dere godt om før dere svarer, ellers kommer han tilbake tidligere.', warnBtn:'Vi skal være stille',
+  penTitle:'Snape hørte dere!', penBody:'Et sted over dere smeller en dør. Snapes fotspor beveger seg raskere nå. All den ville gjettingen lagde for mye støy, og dere har mistet {t}.', penBtn:'Fortsett',
+  caughtKicker:'Korridoren i fangehullet · tiden er ute', caughtTitle:'Avslørt!', skipScene:'Hopp over scenen',
+  caughtLines:[
+    'Faklene flakker. Bak dere knirker en dør.',
+    '«Skal dere noe sted?» Professor Snape trer ut av skyggene. De svarte øynene hans glir fra ansiktene deres til det gamle pergamentet i hendene deres.',
+    '«En hemmelig gang. Seks små bokstaver. Og kontoret mitt.» Han krøller på leppa. «Trodde dere virkelig at jeg ikke ville skjønne det?»',
+    'Han dunker tryllestaven mot pergamentet. Tynne, edderkoppaktige ord dukker opp: «Herr Gevir ønsker professor Snape en lang og kjedelig kveld med lekseretting.»',
+    'Snape blir likblek av raseri. Blekket blekner, og kartet er blankt igjen. «Gjensitting,» hvisker han. «Hver kveld. Fram til jul.»'
+  ],
+  lettersFound:'Bokstaver funnet', reportL:'Rapportkode til læreren',
+  mirrorHint1:'Speil viser ikke ting helt slik de er. Se nøye på bokstavene. Er det noe uvanlig med dem?',
+  mirrorHint2:{flip:'Alt er speilvendt, som skrift sett i et speil. Les hver linje fra høyre mot venstre.', reverse:'Hvert ord er stavet baklengs. Les hvert ord fra siste bokstav til første.', erised:'Hele beskjeden er skrevet baklengs, og mellomrommene står på feil steder. Begynn med den aller siste bokstaven og les mot begynnelsen.'},
+  mirrorBegins:'Beskjeden begynner slik: «{w} …»',
+  ev:{
+    hagrid:{name:'Rubeus Hagrid', kicker:'På kartet: noen svært store er på vei mot dere', story:'En enorm skygge fyller korridoren. Det er Hagrid, med en sekk som spreller. «Jøss! Hva gjør dere ute av senga?» Han klør seg i skjegget. «Vet dere hva? Hjelp meg med dyra mine, så skal jeg vise dere en snarvei.»', instr:'Svar på Hagrids spørsmål (på engelsk) før han mister tålmodigheten. Hvert riktige svar gir dere 1 ekstra minutt. Dere har bare ett forsøk!', reward:'Hagrid viser dere en snarvei bak et veggteppe. Dere vinner {t} ekstra!', none:'Hagrid trekker på skuldrene. «Pytt, pytt. Stikk av gårde, da.» Ingen snarvei denne gangen.', skip:'Gjem dere bak en statue'},
+    dumbledore:{name:'Albus Dumbledore', kicker:'På kartet: noen nynner i korridoren', story:'Albus Dumbledore trer fram bak en rustning. Han ser ikke det minste overrasket ut over å se dere. «Å. Å vandre rundt i slottet om natta er en utmerket måte å lære ting på,» sier han med glimt i øyet. «La oss se hva dere har lært.»', instr:'Svar på Dumbledores spørsmål (på engelsk). Hvert riktige svar gir dere 10 huspoeng. Dere har bare ett forsøk!', reward:'Dumbledore smiler. «{n} poeng til {house}, for nysgjerrighet.» Så går han sin vei, nynnende.', none:'Dumbledore smiler vennlig. «Nåja. Natta er lang.» Han går sin vei, nynnende.', skip:'Snik dere stille bort'}
+  },
+  evAnswer:'Svar', evContinue:'Fortsett', evSkipped:'Dere gjemmer dere til fottrinnene forsvinner.', evTimeout:'Tiden er ute!', evScore:'{n} av {total} riktige.',
+  tThis:'Denne maskinen', tResults:'Klasseresultater',
+  tResultsHelp:'Når et lag er ferdig (rømt eller avslørt), viser skjermen deres en rapportkode. Skriv den inn her sammen med lagnavnet. Resultatene lagres bare på denne maskinen.',
+  tCode:'Rapportkode', tCodePh:'Rapportkode, f.eks. 4K7-QX2-M9A', tTeam:'Lagnavn', tAdd:'Legg til',
+  tBadCode:'Koden er ikke gyldig. Sjekk om den er skrevet riktig.', tAdded:'La til {team}.', tShowBoard:'Vis på prosjektoren',
+  tClear:'Slett alle resultater', tClearSure:'Klikk igjen for å slette', tNoResults:'Ingen resultater ennå.', tCodeHere:'Rapportkode: {c}', tRemove:'Fjern',
+  col:{team:'Lag', house:'Hus', level:'Nivå', result:'Resultat', left:'Tid igjen', points:'Poeng', hints:'Hint'},
+  resEscaped:'Rømt', resCaught:'Avslørt · {n}/6 bokstaver',
+  boardTitle:'Husmesterskapet', boardSub:'Huspoeng fra alle lagene i klassen',
+  timeUpTitle:'Snape er tilbake!',
+  timeUpBody:'Kalde fottrinn gjaller ned trappa til fangehullet. «Gjensitting,» sier Snape lavt. «Hver kveld. Fram til jul.» Tiden er ute, men dere kan fortsette og fullføre flukten. Dere får ikke tidsbonus.',
+  keepGoing:'Fortsett',
+  warn15:'Kartet viser at Snape forlater lærerværelset… 15 minutter igjen!',
+  warn5:'Snape er i trappa til fangehullet! 5 minutter igjen!',
+  winKicker:'Snapes kontor · det brenner i peisen',
+  winTitle:'Mischief managed!',
+  winBody:'Dere sniker dere inn på Snapes kontor, finner gjensittingslista og slipper den inn i peisen. Når Snape kommer tilbake, er fangehullet tomt, og det finnes ikke spor av noen gjensitting.',
+  winLate:'Dere var litt sene, men lista brant likevel. Snape vil aldri kunne bevise noe som helst.',
+  stats:{team:'Lag', house:'Hus', diff:'Nivå', used:'Tid brukt', left:'Tid igjen', points:'Huspoeng', hints:'Hint brukt'},
+  wipeLabel:'For å tømme kartet, rør ved det med tryllestaven og si ordene (på engelsk):',
+  wipePh:'Mischief managed', wipeBtn:'Tøm kartet',
+  pinTitle:'Lærertilgang', pinLabel:'Lærer-PIN', pinBtn:'Åpne', pinWrong:'Feil PIN.', close:'Lukk',
+  tTitle:'Lærerpanel', tDiff:'Vanskelighetsgrad på denne maskinen',
+  tStatus:'{team} ({house}) · {diff} · rom løst: {n}/7 · hint brukt: {h}',
+  tNotStarted:'Spillet har ikke startet på denne maskinen ennå.',
+  tAnswers:'Fasit · {diff}',
+  tSolve:'Løs neste rom', tSolveAll:'Løs rom 1–6', tPlus:'+5 minutter', tMinus:'−5 minutter', tPause:'Pause tiden', tResume:'Start tiden igjen',
+  tPtsUp:'+10 poeng', tPtsDown:'−10 poeng', tReset:'Nullstill denne maskinen', tResetSure:'Klikk igjen for å nullstille',
+  up:'Flytt opp', down:'Flytt ned',
+  rooms:{
+    potions:{name:'Eliksirklasserommet', story:'Dere starter i Snapes klasserom i fangehullet. På tavla har Snape skrevet oppskriften på en eliksir for lydløse skritt (Draught of Silent Footsteps), men noen har blandet sammen stegene. Brygg den riktig, så kan dere snike dere gjennom slottet uten en lyd. Dampen vil vise dere den første bokstaven.', instr:'Sett stegene i riktig rekkefølge. Bruk pilene til å flytte et steg opp eller ned. Trykk så på «Sjekk».', hint:'Se etter tidsord som first, once, as soon as, while, when og finally. De forteller hva som må skje før noe annet kan skje.'},
+    hall:{name:'Storsalen', story:'Storsalen er mørk og tom. Bare Sorteringshatten (the Sorting Hat) er igjen, der den sitter på krakken sin. «Svar på gåtene mine,» gjesper den, «så skal jeg fortelle dere en hemmelighet.»', instr:'Løs hver gåte. Skriv ett engelsk ord eller navn i hver boks. Trykk så på «Sjekk».', hint:'Les hver gåte sakte og finn de viktigste ordene. Hvert svar er ett engelsk ord eller et navn.'},
+    bathroom:{name:'Hulkende Huldas toalett', story:'Hulkende Hulda (Moaning Myrtle) gråter igjen. Dagboka hennes falt ned i en do, og vannet har rotet til grammatikken hennes. «Hvis dere retter dagboka mi,» snufser hun, «skal jeg fortelle dere neste bokstav. Ingen hjelper noen gang stakkars meg!»', instr:'Klikk på alle ord som er feil. Klikk en gang til for å fjerne markeringen. Når dere tror dere har funnet alle feilene, trykker dere på «Sjekk».', hint:'Sjekk verbene først: fortid, uregelrette verb (go → went) og samsvar (they was → they were). Se så etter ord som er lette å blande, som there/their, its/it\'s og for/since.'},
+    library:{name:'Biblioteket', story:'Madam Pince sover ved pulten sin. I den forbudte avdelingen (the Restricted Section) har en forbannelse stokket om ordene på ryggen av noen gamle bøker. Løs dem, så faller en bokstav ut av den siste boka.', instr:'Stokk om bokstavene for å finne hvert engelske ord. Står dere fast? Dere kan kjøpe en ledetråd til et ord, men det koster huspoeng. Trykk så på «Sjekk».', hint:'Begynn med vokalene (A, E, I, O, U, Y) og sett konsonanter rundt dem. Se etter vanlige engelske bokstavmønstre som -ing, -le, -ble, -er og -et, og tenk på hvor dere er.'},
+    forest:{name:'Den forbudte skogen', story:'En smal sti leder inn i Den forbudte skogen. Ved hvert veiskille står det et skilt med en uferdig setning. Bare den grammatisk riktige stien er trygg. De andre leder rett til kjempeedderkoppene.', instr:'Velg ordet eller ordene som gjør setningen riktig. Én feil sving, og dere er tilbake ved skogkanten!', hint:'Les hele setningen med hvert alternativ. Se etter tidsord som last night, since, by the time og if. De forteller hvilken tid verbet skal stå i.'},
+    mirror:{name:'Speilet (Mirror of Erised)', story:'I et ubrukt klasserom står et høyt, gyllent speil på klørføtter. Merkelige ord glitrer i det mørke glasset, og speilet ser ut til å vente på et svar.', instr:'Finn ut hva speilet sier, skriv svaret på spørsmålet på engelsk og trykk på «Sjekk».', hint:''},
+    office:{name:'Snapes kontor', story:'Dere er tilbake i fangehullene, utenfor Snapes kontor. Glass med slimete ting stirrer på dere fra hyllene. Døra er forseglet med en passordbesvergelse, og dere har seks bokstaver.', instr:'Sett de seks bokstavene i riktig rekkefølge slik at de blir ett engelsk ord, og si passordet. Dere kan klikke på bokstavene for å skrive dem.', hint:''}
+  }
+}};
+
+/* ================= helpers ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function fresh(prev){
+  return {v:1, phase:'closed', lang:prev&&prev.lang||'en', music:prev?!!prev.music:false, sfx:prev?prev.sfx!==false:true,
+    team:'', house:'gryffindor', diff:'easy', solved:[false,false,false,false,false,false,false], teacherSolved:0,
+    points:100, hints:{}, endAt:null, paused:null, timeUp:false, timeUpSeen:false, warned:{}, startedAt:null, wonLeft:null,
+    view:'map', room:0, rs:{}, ev:{}, noise:0, noiseT:0, noiseWarned:false, penalties:0, clues:0};
+}
+function load(){ try { const s = localStorage.getItem(STORE); return s ? JSON.parse(s) : null; } catch(e){ return null; } }
+function save(){ try { localStorage.setItem(STORE, JSON.stringify(S)); } catch(e){} }
+let S = Object.assign(fresh(), load() || {});
+
+function get(obj, key){ return key.split('.').reduce((o,k) => o == null ? undefined : o[k], obj); }
+function t(key, vars){
+  let v = get(T[S.lang], key); if (v == null) v = get(T.en, key); if (v == null) return key;
+  if (typeof v === 'string' && vars) v = v.replace(/\{(\w+)\}/g, (m,k) => vars[k] != null ? vars[k] : m);
+  return v;
+}
+const roomName = i => t('rooms.' + ROOMS[i] + '.name');
+
+const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
+  .replace(/[’`´]/g,"'").replace(/'/g,'').replace(/[^a-z0-9 ]+/g,' ').replace(/\s+/g,' ').trim().replace(/^(a|an|the) /,'');
+const matches = (input, answers) => { const n = norm(input); return !!n && answers.some(a => norm(a) === n); };
+function lev(a, b){
+  const m = a.length, n = b.length; if (!m) return n; if (!n) return m;
+  let prev = Array.from({length:n+1}, (_,j) => j);
+  for (let i = 1; i <= m; i++){ const cur = [i];
+    for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j]+1, cur[j-1]+1, prev[j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+    prev = cur; }
+  return prev[n];
+}
+function seeded(seed){ let a = (seed ^ 0x9e3779b9) >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function shuffled(n){ const a = Array.from({length:n}, (_,i) => i); for (let i = n-1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
+function perm(n, seed){ const r = seeded(seed), a = Array.from({length:n}, (_,i) => i); for (let i = n-1; i > 0; i--){ const j = Math.floor(r()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; }
+function fmt(ms){ ms = Math.max(0, ms); const s = Math.ceil(ms/1000); return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); }
+let toastTimer;
+function toast(msg, ms = 4200){ const el = $('#toast'); el.textContent = msg; el.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), ms); }
+function shake(el){ el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
+
+/* ================= sound ================= */
+const Snd = (() => {
+  let ctx = null, master, musicBus, sfxBus, timer = null, nextBar = 0, bar = 0;
+  const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+  function ensure(){
+    if (ctx) { if (ctx.state === 'suspended') ctx.resume(); return ctx; }
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
+    ctx = new AC();
+    master = ctx.createGain(); master.gain.value = .9; master.connect(ctx.destination);
+    const conv = ctx.createConvolver(); const len = ctx.sampleRate * 4.5, buf = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let c = 0; c < 2; c++){ const d = buf.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 2.2); }
+    conv.buffer = buf; const wet = ctx.createGain(); wet.gain.value = .4; conv.connect(wet); wet.connect(master);
+    musicBus = ctx.createGain(); musicBus.gain.value = 0; musicBus.connect(master); musicBus.connect(conv);
+    sfxBus = ctx.createGain(); sfxBus.gain.value = .55; sfxBus.connect(master); sfxBus.connect(conv);
+    return ctx;
+  }
+  function bell(dest, m, time, vel = .18, dur = 1.6){
+    const f = mtof(m), g = ctx.createGain();
+    g.gain.setValueAtTime(0, time); g.gain.linearRampToValueAtTime(vel, time + .006); g.gain.exponentialRampToValueAtTime(.0005, time + dur); g.connect(dest);
+    [[1,1],[2.01,.32],[3.98,.14],[5.43,.05]].forEach(([r,a]) => { const o = ctx.createOscillator(), og = ctx.createGain(); o.frequency.value = f*r; og.gain.value = a; o.connect(og); og.connect(g); o.start(time); o.stop(time + dur + .05); });
+  }
+  function pad(dest, notes, time, dur, vel = .045){
+    const g = ctx.createGain(), lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 650;
+    g.gain.setValueAtTime(0, time); g.gain.linearRampToValueAtTime(vel, time + dur*.3); g.gain.linearRampToValueAtTime(0, time + dur);
+    lp.connect(g); g.connect(dest);
+    notes.forEach(m => [-7,7].forEach(det => { const o = ctx.createOscillator(); o.type = 'triangle'; o.frequency.value = mtof(m); o.detune.value = det; o.connect(lp); o.start(time); o.stop(time + dur + .05); }));
+  }
+  // Original ambient score: a low D drone, a whispering choir over a D pedal, an out-of-tune
+  // music box, a distant bell toll, a slow chromatic cello line and wind through the corridors.
+  const SECTION = 8;
+  const CHORDS = [[62,65,69],[63,67,70],[62,65,69],[61,64,67,70],[62,65,68],[58,62,65],[63,67,70],[61,64,67,70]];
+  const BOX = [74,75,77,79,81,82,85,86,87,89];
+  const rnd = Math.random;
+  let held = [];
+  function choir(notes, time, dur, vel = .022){
+    const g = ctx.createGain(); g.gain.setValueAtTime(0, time); g.gain.linearRampToValueAtTime(vel, time + dur*.4); g.gain.linearRampToValueAtTime(0, time + dur); g.connect(musicBus);
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1700; lp.connect(g);
+    const bands = [[600,3],[1040,4],[2400,6]].map(([f,q]) => { const b = ctx.createBiquadFilter(); b.type = 'bandpass'; b.frequency.value = f; b.Q.value = q; b.connect(lp); return b; });
+    const v = ctx.createOscillator(), vg = ctx.createGain(); v.frequency.value = 4 + rnd()*1.5; vg.gain.value = 7; v.connect(vg); v.start(time); v.stop(time + dur + .1);
+    notes.forEach(m => [-10,0,10].forEach(det => {
+      const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = mtof(m - 12); o.detune.value = det + (rnd()-.5)*5; vg.connect(o.detune);
+      bands.forEach(b => o.connect(b)); o.start(time); o.stop(time + dur + .1); }));
+  }
+  function cello(m, time, dur, vel = .05){
+    const g = ctx.createGain(), lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 520; lp.Q.value = 2;
+    g.gain.setValueAtTime(0, time); g.gain.linearRampToValueAtTime(vel, time + .9); g.gain.setValueAtTime(vel, time + dur - .8); g.gain.linearRampToValueAtTime(0, time + dur);
+    lp.connect(g); g.connect(musicBus);
+    [['sawtooth',-4],['triangle',5]].forEach(([type, det]) => { const o = ctx.createOscillator(); o.type = type; o.frequency.value = mtof(m); o.detune.value = det;
+      const v = ctx.createOscillator(), vg = ctx.createGain(); v.frequency.value = 5; vg.gain.value = 9; v.connect(vg); vg.connect(o.detune);
+      o.connect(lp); o.start(time); o.stop(time + dur + .05); v.start(time); v.stop(time + dur + .05); });
+  }
+  function noiseBuf(sec){ const len = ctx.sampleRate * sec, b = ctx.createBuffer(1, len, ctx.sampleRate), d = b.getChannelData(0); for (let i = 0; i < len; i++) d[i] = Math.random()*2-1; return b; }
+  function whisper(time){
+    const src = ctx.createBufferSource(), bp = ctx.createBiquadFilter(), g = ctx.createGain();
+    src.buffer = noiseBuf(4); bp.type = 'bandpass'; bp.Q.value = 9; bp.frequency.setValueAtTime(1800, time); bp.frequency.linearRampToValueAtTime(3200, time + 3.5);
+    g.gain.setValueAtTime(0, time); g.gain.linearRampToValueAtTime(.05, time + 1.6); g.gain.linearRampToValueAtTime(0, time + 3.8);
+    src.connect(bp); bp.connect(g); g.connect(musicBus); src.start(time); src.stop(time + 4);
+  }
+  function startHeld(){
+    const t0 = ctx.currentTime;
+    const dg = ctx.createGain(); dg.gain.value = .07; dg.connect(musicBus);
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 230; lp.Q.value = 4; lp.connect(dg);
+    const lfo = ctx.createOscillator(), lg = ctx.createGain(); lfo.frequency.value = .045; lg.gain.value = 130; lfo.connect(lg); lg.connect(lp.frequency); lfo.start(t0); held.push(lfo);
+    [[38,-6],[38,6],[45,0]].forEach(([m, det]) => { const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = mtof(m); o.detune.value = det; o.connect(lp); o.start(t0); held.push(o); });
+    const sub = ctx.createOscillator(), sg = ctx.createGain(); sub.frequency.value = mtof(26); sg.gain.value = .06; sub.connect(sg); sg.connect(musicBus); sub.start(t0); held.push(sub);
+    const wind = ctx.createBufferSource(); wind.buffer = noiseBuf(3); wind.loop = true;
+    const wb = ctx.createBiquadFilter(); wb.type = 'bandpass'; wb.frequency.value = 420; wb.Q.value = .9;
+    const wg = ctx.createGain(); wg.gain.value = .045; wind.connect(wb); wb.connect(wg); wg.connect(musicBus);
+    const wl = ctx.createOscillator(), wlg = ctx.createGain(); wl.frequency.value = .07; wlg.gain.value = 300; wl.connect(wlg); wlg.connect(wb.frequency);
+    const wl2 = ctx.createOscillator(), wl2g = ctx.createGain(); wl2.frequency.value = .11; wl2g.gain.value = .03; wl2.connect(wl2g); wl2g.connect(wg.gain);
+    wind.start(t0); wl.start(t0); wl2.start(t0); held.push(wind, wl, wl2);
+  }
+  function scheduleBar(time){
+    const ch = CHORDS[bar % CHORDS.length];
+    choir(ch, time, SECTION + 3);
+    const n = 2 + Math.floor(rnd()*3);
+    for (let k = 0; k < n; k++){
+      const at = time + .5 + rnd()*(SECTION - 1.5), m = BOX[Math.floor(rnd()*BOX.length)];
+      bell(musicBus, m + (rnd()-.5)*.35, at, .04, 3.4);
+      if (rnd() < .35) bell(musicBus, m + (rnd() < .5 ? 6 : 1) + (rnd()-.5)*.3, at + .28, .03, 3.4);
+    }
+    if (bar % 2 === 0){ bell(musicBus, 50, time, .11, 7.5); bell(musicBus, 38, time, .08, 8); }
+    if (bar % 4 === 2) [50,49,46,45].forEach((m, k) => cello(m, time + k*2, 2.4));
+    if (bar % 4 === 3 && rnd() < .7) whisper(time + 1 + rnd()*3);
+    bar++;
+  }
+  function startMusic(){
+    if (!ensure()) return; if (timer) return;
+    musicBus.gain.cancelScheduledValues(ctx.currentTime); musicBus.gain.setTargetAtTime(.75, ctx.currentTime, 1.4);
+    startHeld();
+    nextBar = ctx.currentTime + .2;
+    timer = setInterval(() => { while (nextBar < ctx.currentTime + 1.5){ scheduleBar(nextBar); nextBar += SECTION; } }, 300);
+  }
+  function stopMusic(){
+    if (!ctx) return; musicBus.gain.cancelScheduledValues(ctx.currentTime); musicBus.gain.setTargetAtTime(0, ctx.currentTime, .3); clearInterval(timer); timer = null;
+    const old = held; held = []; setTimeout(() => old.forEach(o => { try { o.stop(); } catch(e){} }), 2000);
+  }
+  const can = () => S.sfx && ensure();
+  return {
+    ensure, startMusic, stopMusic, playing: () => !!timer,
+    tick(){ if (can()) bell(sfxBus, 91, ctx.currentTime, .05, .25); },
+    ok(){ if (!can()) return; const t0 = ctx.currentTime; [72,76,79,84,88].forEach((m,i) => bell(sfxBus, m, t0 + i*.07, .14, 1.4)); },
+    bad(){ if (!can()) return; const t0 = ctx.currentTime, g = ctx.createGain(); g.gain.setValueAtTime(.16, t0); g.gain.exponentialRampToValueAtTime(.001, t0 + .5); g.connect(sfxBus);
+      [150,157].forEach(f => { const o = ctx.createOscillator(); o.type = 'triangle'; o.frequency.setValueAtTime(f, t0); o.frequency.exponentialRampToValueAtTime(f*.6, t0 + .45); o.connect(g); o.start(t0); o.stop(t0 + .55); }); },
+    page(){ if (!can()) return; const t0 = ctx.currentTime, len = ctx.sampleRate * .35, b = ctx.createBuffer(1, len, ctx.sampleRate), d = b.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * Math.sin(Math.PI * i/len) * .6;
+      const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 2400; f.Q.value = .7; s.buffer = b; s.connect(f); f.connect(sfxBus); s.start(t0); },
+    chime(){ if (!can()) return; const t0 = ctx.currentTime; [64,60,62,55].forEach((m,i) => bell(sfxBus, m, t0 + i*.55, .16, 2.6)); },
+    doom(){ if (!can()) return; const t0 = ctx.currentTime; [[50,0],[49,1.1],[46,2.2],[38,3.3]].forEach(([m, dt]) => bell(sfxBus, m, t0 + dt, .24, 5)); },
+    magic(){ if (!can()) return; const t0 = ctx.currentTime, sc = [69,72,74,76,79,81,84,86,88,91,93,96]; sc.forEach((m,i) => bell(sfxBus, m, t0 + i*.06, .08, 1.8)); }
+  };
+})();
+
+/* ================= map ================= */
+const NS = 'http://www.w3.org/2000/svg';
+const GEO = {
+  library:{x:70,y:70,w:210,h:130}, staff:{x:330,y:70,w:150,h:90}, mirror:{x:540,y:70,w:220,h:120},
+  hall:{x:300,y:240,w:280,h:140}, bathroom:{x:630,y:250,w:140,h:110},
+  potions:{x:70,y:430,w:230,h:140}, office:{x:350,y:460,w:180,h:110}, forest:{x:835,y:200,w:150,h:250}
+};
+const CORRIDORS = [
+  [[175,200],[175,212],[790,212],[790,320],[835,320]],
+  [[405,160],[405,212]], [[650,190],[650,212]], [[440,212],[440,240]], [[700,212],[700,250]],
+  [[185,430],[185,320],[300,320]], [[580,310],[630,310]], [[440,380],[440,460]], [[300,515],[350,515]]
+];
+const WALKERS = [
+  {id:'filch', name:'Argus Filch', pts:[[190,212],[770,212],[790,212],[790,300]], speed:20, kind:'shoe'},
+  {id:'norris', name:'Mrs Norris', pts:[[95,95],[255,95],[255,180],[95,180],[95,95]], speed:26, kind:'paw'},
+  {id:'peeves', name:'Peeves', pts:[[565,92],[735,170],[565,170],[735,92],[565,92]], speed:42, kind:'star'},
+  {id:'dumbledore', name:'Albus Dumbledore', pts:[[330,262],[550,262],[550,360],[330,360],[330,262]], speed:11, kind:'shoe'},
+  {id:'hagrid', name:'Rubeus Hagrid', pts:[[860,410],[965,470],[870,530],[960,590]], speed:15, kind:'big'},
+  {id:'snape', name:'Severus Snape', pts:[[405,118],[405,212],[440,212],[440,300],[440,452]], kind:'shoe', snape:true}
+];
+let mapRnd = seeded(7);
+const jit = (v, j) => v + (mapRnd() - .5) * j;
+function rl(x1,y1,x2,y2,j = 2.2){ return `M${jit(x1,j)} ${jit(y1,j)} Q${jit((x1+x2)/2,j*1.6)} ${jit((y1+y2)/2,j*1.6)} ${jit(x2,j)} ${jit(y2,j)}`; }
+function rrect(r, j){ const {x,y,w,h} = r; return [rl(x,y,x+w,y,j), rl(x+w,y,x+w,y+h,j), rl(x+w,y+h,x,y+h,j), rl(x,y+h,x,y,j)].join(' '); }
+function rcircle(cx, cy, r){ const k = .5523 * r, a = () => jit(0, r*.12); return `M${cx-r} ${cy} C${cx-r+a()} ${cy-k} ${cx-k} ${cy-r+a()} ${cx} ${cy-r} C${cx+k} ${cy-r+a()} ${cx+r+a()} ${cy-k} ${cx+r} ${cy} C${cx+r+a()} ${cy+k} ${cx+k} ${cy+r+a()} ${cx} ${cy+r} C${cx-k} ${cy+r+a()} ${cx-r+a()} ${cy+k} ${cx-r} ${cy}`; }
+function el(tag, attrs = {}, parent){ const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function inkPath(d, parent, cls = 'ink', delay = 0){ return el('path', {d, class:cls, pathLength:1, style:`--d:${delay.toFixed(2)}s`}, parent); }
+const polyD = pts => pts.map((p,i) => (i ? 'L' : 'M') + p[0] + ' ' + p[1]).join(' ');
+
+const svg = $('#map');
+let layers = {};
+function buildMap(){
+  mapRnd = seeded(7);
+  svg.querySelectorAll(':scope > g').forEach(g => g.remove());
+  ['walls','cors','rooms','deco','prints','names'].forEach(n => layers[n] = el('g', {class:'l-'+n}, svg));
+  // castle walls with a gap for the door to the grounds
+  const W = layers.walls;
+  inkPath([rl(40,40,800,40,3), rl(800,40,800,298,3), rl(800,342,800,600,3), rl(800,600,40,600,3), rl(40,600,40,40,3)].join(' '), W, 'ink', 0);
+  inkPath([rl(48,48,792,48,2), rl(792,48,792,298,2), rl(792,342,792,592,2), rl(792,592,48,592,2), rl(48,592,48,48,2)].join(' '), W, 'ink thin', .3);
+  [[40,40],[800,40],[40,600],[800,600]].forEach(([x,y],i) => inkPath(rcircle(x,y,24), W, 'ink', .2 + i*.1));
+  // corridors
+  CORRIDORS.forEach((c,i) => { inkPath(polyD(c), layers.cors, 'cor-out', .5 + i*.08); });
+  CORRIDORS.forEach((c,i) => { inkPath(polyD(c), layers.cors, 'cor-in', .5 + i*.08); });
+  // decorative: staircase, forest trees, notes
+  const D = layers.deco;
+  for (let i = 0; i < 6; i++) inkPath(rl(170+i*0, 335+i*14, 200, 335+i*14, 1), D, 'ink faint', 1 + i*.05);
+  const tr = seeded(11);
+  for (let i = 0; i < 70; i++){
+    const x = 815 + tr()*172, y = 50 + tr()*545;
+    if (x > 838 && x < 982 && y > 285 && y < 375) continue;
+    if (y > 300 && y < 340 && x < 850) continue;
+    const r = 6 + tr()*7;
+    inkPath(rcircle(x, y, r) + ` M${x} ${y+r} L${x} ${y+r+5}`, D, 'ink thin', 1.2 + tr()*1.2);
+  }
+  el('text', {x:405, y:122, 'text-anchor':'middle', class:'note', 'data-k':'staffRoom'}, D);
+  inkPath(rrect(GEO.staff, 1.8), D, 'ink', .7);
+  el('text', {x:180, y:412, 'text-anchor':'middle', class:'note', 'data-k':'dungeons'}, D);
+  el('text', {x:325, y:535, 'text-anchor':'middle', class:'note', 'data-k':'passage', style:'font-size:10px'}, D);
+  el('text', {x:420, y:628, 'text-anchor':'middle', class:'note', 'data-k':'blackLake'}, D);
+  // rooms
+  ROOMS.concat([]).forEach((id, i) => {
+    const g = GEO[id], grp = el('g', {class:'room', 'data-i':i}, layers.rooms);
+    if (id === 'forest'){
+      el('rect', {x:g.x, y:g.y, width:g.w, height:g.h, fill:'transparent'}, grp);
+      el('rect', {x:g.x+10, y:g.y+90, width:g.w-20, height:70, class:'room-fill', rx:6, opacity:.9}, grp);
+      inkPath(rrect({x:g.x+10, y:g.y+90, w:g.w-20, h:70}, 1.5), grp, 'ink thin room-edge', 1.4);
+    } else {
+      el('rect', {x:g.x, y:g.y, width:g.w, height:g.h, class:'room-fill'}, grp);
+      inkPath(rrect(g, 2), grp, 'ink room-edge', .9 + i*.1);
+      inkPath(rrect(g, 2.6), grp, 'ink faint', 1 + i*.1);
+    }
+    el('rect', {x:g.x-5, y:g.y-5, width:g.w+10, height:g.h+10, rx:4, class:'glow'}, grp);
+    el('text', {class:'label'}, grp);
+    el('text', {class:'tag'}, grp);
+    const b = el('g', {class:'badge', transform:`translate(${g.x+g.w-6} ${g.y+6})`}, grp);
+    el('circle', {r:15}, b); el('text', {y:6}, b);
+    grp.addEventListener('click', () => openRoom(i));
+    grp.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openRoom(i); } });
+  });
+  // walkers
+  WALKERS.forEach(w => {
+    let L = 0; w.segs = [];
+    for (let i = 0; i < w.pts.length - 1; i++){ const a = w.pts[i], b = w.pts[i+1], l = Math.hypot(b[0]-a[0], b[1]-a[1]); w.segs.push({a,b,l,s:L}); L += l; }
+    w.L = L; w.side = 1; w.last = null;
+    w.label = el('text', {class:'who' + (w.snape ? ' snape' : '')}, layers.names); w.label.textContent = w.name;
+  });
+  updateMapText();
+}
+function wrapLabel(text, maxChars){
+  const words = text.split(' '), lines = []; let cur = '';
+  words.forEach(w => { if ((cur + ' ' + w).trim().length > maxChars && cur){ lines.push(cur); cur = w; } else cur = (cur + ' ' + w).trim(); });
+  if (cur) lines.push(cur); return lines;
+}
+function updateMapText(){
+  $$('[data-k]', svg).forEach(n => n.textContent = t(n.dataset.k));
+  ROOMS.forEach((id, i) => {
+    const g = GEO[id], grp = $(`.room[data-i="${i}"]`, svg), lab = $('.label', grp);
+    const lines = wrapLabel(roomName(i), Math.max(10, Math.floor(g.w / 9.5)));
+    const cy = id === 'forest' ? g.y + 125 : g.y + g.h/2;
+    lab.innerHTML = '';
+    lines.forEach((ln, k) => { const ts = el('tspan', {x:g.x + g.w/2, y:cy + (k - (lines.length-1)/2) * 19 + 6}, lab); ts.textContent = ln; });
+    const tag = $('.tag', grp); tag.setAttribute('x', g.x + g.w/2); tag.setAttribute('y', (id === 'forest' ? g.y + 152 : g.y + g.h - 12)); tag.textContent = '';
+  });
+  $('#map-title').textContent = t('mapTitle');
+}
+const firstOpen = () => { const i = S.solved.findIndex(x => !x); return i < 0 ? 7 : i; };
+function updateMapState(){
+  const cur = firstOpen();
+  ROOMS.forEach((id, i) => {
+    const grp = $(`.room[data-i="${i}"]`, svg), solved = S.solved[i], open = S.phase !== 'closed' && i <= cur;
+    grp.classList.toggle('locked', !open);
+    grp.classList.toggle('open', open);
+    grp.classList.toggle('current', S.phase === 'play' && i === cur);
+    grp.setAttribute('tabindex', open ? '0' : '-1');
+    grp.setAttribute('role', 'button');
+    grp.setAttribute('aria-label', roomName(i) + (solved ? ' – ' + t('solvedKicker') : ''));
+    const badge = $('.badge', grp); badge.style.display = solved && i < 6 ? '' : 'none';
+    $('.badge text', grp).textContent = DATA.rooms[i].letter || '';
+    $('.tag', grp).textContent = (S.phase === 'play' && i === cur) ? '✦ ' + (S.team || t('teamDefault')) + ' · ' + t('here') : '';
+  });
+}
+function posAt(w, d){
+  d = Math.max(0, Math.min(w.L, d));
+  for (const s of w.segs) if (d <= s.s + s.l || s === w.segs[w.segs.length-1]){
+    const f = s.l ? Math.min(1, (d - s.s) / s.l) : 0;
+    return [s.a[0] + (s.b[0]-s.a[0])*f, s.a[1] + (s.b[1]-s.a[1])*f, Math.atan2(s.b[1]-s.a[1], s.b[0]-s.a[0])];
+  }
+}
+function snapeFrac(){
+  if (S.phase === 'closed') return 0;
+  if (S.phase === 'setup') return 0;
+  return Math.max(0, Math.min(1, 1 - remaining() / GAME));
+}
+function walkerPos(w, now){
+  const ts = now / 1000;
+  if (w.snape){
+    const base = snapeFrac() * w.L, wob = Math.sin(ts * .9) * 10, d = Math.max(0, Math.min(w.L, base + wob));
+    const p = posAt(w, d), dir = Math.cos(ts * .9) >= 0 ? 0 : Math.PI;
+    return [p[0], p[1], p[2] + dir];
+  }
+  const span = w.L * 2, raw = (ts * w.speed + w.L * .37 * w.id.length) % span;
+  const fwd = raw <= w.L, p = posAt(w, fwd ? raw : span - raw);
+  return [p[0], p[1], p[2] + (fwd ? 0 : Math.PI)];
+}
+function dropPrint(w, now){
+  const [x, y, a] = walkerPos(w, now);
+  w.label.setAttribute('x', x.toFixed(1)); w.label.setAttribute('y', (y + 20).toFixed(1));
+  if (reduced) return;
+  if (w.last && Math.hypot(x - w.last[0], y - w.last[1]) < 4) return;
+  w.last = [x, y]; w.side = -w.side;
+  const px = x + Math.cos(a + Math.PI/2) * 3.2 * w.side, py = y + Math.sin(a + Math.PI/2) * 3.2 * w.side;
+  const g = el('g', {class:'fp' + (w.snape ? ' snape' : ''), transform:`translate(${px.toFixed(1)} ${py.toFixed(1)}) rotate(${(a*180/Math.PI + 90).toFixed(0)})`}, layers.prints);
+  if (w.kind === 'paw'){ el('circle', {r:1.8, cy:1}, g); [-2,0,2].forEach(dx => el('circle', {r:.8, cx:dx, cy:-2}, g)); }
+  else if (w.kind === 'star'){ el('path', {d:'M0 -3 L.8 -.8 L3 0 L.8 .8 L0 3 L-.8 .8 L-3 0 L-.8 -.8Z'}, g); }
+  else { const k = w.kind === 'big' ? 1.6 : 1; el('ellipse', {rx:2*k, ry:3.4*k, cy:-1.6*k}, g); el('ellipse', {rx:1.6*k, ry:1.7*k, cy:3.6*k}, g); }
+  setTimeout(() => g.remove(), 5100);
+}
+let walkTimer = null;
+function walkLoop(){
+  const now = performance.now();
+  if (!$('#view-map').hidden && S.phase !== 'closed') WALKERS.forEach(w => dropPrint(w, now));
+}
+
+/* ================= state helpers ================= */
+function remaining(){ if (S.paused != null) return S.paused; if (!S.endAt) return GAME; return S.endAt - Date.now(); }
+function addTime(ms){
+  if (S.paused != null) S.paused = Math.max(0, S.paused + ms); else if (S.endAt) S.endAt += ms;
+  const r = remaining();
+  if (r > 0){ S.timeUp = false; S.timeUpSeen = false; }
+  if (r > 15*60000) delete S.warned.w15;
+  if (r > 5*60000) delete S.warned.w5;
+}
+const hintsUsed = i => S.hints[i] || 0;
+const totalHints = () => Object.values(S.hints).reduce((a,b) => a+b, 0) + (S.clues || 0);
+const hintCost = i => ['door','mirror'].includes(DATA.rooms[i].type) ? STRICT[S.diff] : COST[S.diff];
+function roomData(i){ const r = DATA.rooms[i]; return r.type === 'door' ? r : r[S.diff]; }
+function rs(i){ return S.rs[i] || (S.rs[i] = {}); }
+
+/* ================= puzzles ================= */
+function wordCards(el, items, st, h, kind){
+  const inp = st.inp || (st.inp = []), res = st.res || (st.res = []);
+  el.innerHTML = `<div class="words">${items.map((it, k) => {
+    const first = it.a[0], len = first.replace(/\s/g,'').length;
+    const meta = [];
+    if (kind === 'riddles' && S.diff !== 'hard') meta.push(t('lettersN', {n:len}));
+    if (h >= 2) meta.push(t('startsWith', {l:first[0].toUpperCase()}));
+    const top = kind === 'anagram'
+      ? `<div class="tiles" aria-label="${esc(it.s)}">${[...it.s].map(c => `<span class="tile">${esc(c)}</span>`).join('')}</div>${(st.clue || [])[k] ? `<p class="q"><span class="meta">${esc(t('clue'))}:</span> ${esc(it.clue)}</p>` : res[k] === 'ok' ? '' : `<p class="q"><button type="button" class="link buy-clue" data-k="${k}">${esc(t('buyClue', {n:STRICT[S.diff]}))}</button></p>`}`
+      : `<p class="q">${esc(it.q)}</p>`;
+    return `<div class="wcard ${res[k] || ''}" data-k="${k}">${top}
+      <div class="wrow"><span class="mark" aria-hidden="true">${res[k] === 'ok' ? '✓' : res[k] === 'bad' ? '✗' : ''}</span>
+      <label class="sr" for="w-${k}">${esc(t('yourAnswer'))} ${k+1}</label>
+      <input id="w-${k}" type="text" autocomplete="off" spellcheck="false" value="${esc(inp[k] || '')}" ${res[k]==='ok'?'readonly':''}>
+      ${meta.length ? `<span class="meta">${esc(meta.join(' · '))}</span>` : ''}</div></div>`;
+  }).join('')}</div>`;
+  $$('.buy-clue', el).forEach(b => b.addEventListener('click', () => {
+    const k = +b.dataset.k; st.clue = st.clue || []; if (st.clue[k]) return;
+    st.clue[k] = true; S.points -= STRICT[S.diff]; S.clues = (S.clues || 0) + 1; save();
+    Snd.magic(); renderBar(); wordCards(el, items, st, h, kind); const f = $('#w-' + k, el); if (f) f.focus();
+  }));
+  $$('input', el).forEach((input, k) => {
+    input.addEventListener('input', () => { inp[k] = input.value; save(); });
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') doCheck(); });
+  });
+}
+function wordCheck(items, st){
+  const inp = st.inp || [], res = st.res = [];
+  let n = 0;
+  items.forEach((it, k) => { const ok = matches(inp[k], it.a); res[k] = ok ? 'ok' : (norm(inp[k]) ? 'bad' : ''); if (ok) n++; });
+  if (n === items.length) return {ok:true};
+  if (!inp.some(v => norm(v))) return {ok:false, msg:t('emptyAns'), quiet:true};
+  return {ok:false, msg:t('someCorrect', {n, total:items.length}), rerender:true};
+}
+function parseDiary(text){
+  const words = [];
+  const toks = text.split(/\s+/).map(tok => {
+    let m = tok.match(/^(.*?)\{([^|}]+)\|([^}]+)\}(.*)$/), pre, w, post, fix = null;
+    if (m) [, pre, w, fix, post] = m;
+    else { m = tok.match(/^([^A-Za-z]*)([A-Za-z][A-Za-z'’-]*)(.*)$/); if (!m) return {raw:tok}; [, pre, w, post] = m; }
+    words.push({w, fix}); return {pre, w, post, fix, k:words.length - 1};
+  });
+  return {toks, words, errs:words.map((x,k) => x.fix ? k : -1).filter(k => k >= 0)};
+}
+
+const PUZ = {
+  order:{
+    render(el, d, st, h){
+      const n = d.steps.length;
+      if (!st.order || st.order.length !== n){
+        let o, seed = 3 + n; do { o = perm(n, seed++ * 97 + Date.now() % 1000); } while (o.every((v,i) => v === i) || o[0] === 0);
+        st.order = o;
+      }
+      if (h >= 2 && !st.lock){ st.order = [0].concat(st.order.filter(x => x !== 0)); st.lock = true; }
+      save();
+      el.innerHTML = `<ol class="steps">${st.order.map((s, p) => {
+        const locked = st.lock && p === 0;
+        const upDis = p === 0 || locked || (st.lock && p === 1), dnDis = p === n-1 || locked;
+        return `<li class="step${locked ? ' locked' : ''}${st.moved === s ? ' moved' : ''}"><span class="step-n">${p+1}</span><span class="step-t">${esc(d.steps[s])}</span>
+          <span class="step-btns"><button type="button" class="arrow" data-mv="-1" data-p="${p}" aria-label="${esc(t('up'))}" ${upDis ? 'disabled' : ''}>▲</button>
+          <button type="button" class="arrow" data-mv="1" data-p="${p}" aria-label="${esc(t('down'))}" ${dnDis ? 'disabled' : ''}>▼</button></span></li>`;
+      }).join('')}</ol>`;
+      el.onclick = e => {
+        const b = e.target.closest('[data-mv]'); if (!b || b.disabled) return;
+        const p = +b.dataset.p, q = p + (+b.dataset.mv);
+        [st.order[p], st.order[q]] = [st.order[q], st.order[p]]; st.moved = st.order[q];
+        save(); Snd.tick(); PUZ.order.render(el, d, st, h);
+        const nb = $(`[data-p="${q}"][data-mv="${b.dataset.mv}"]`, el); (nb && !nb.disabled ? nb : $(`[data-p="${q}"]:not(:disabled)`, el))?.focus();
+      };
+    },
+    check(d, st){ const n = st.order.filter((s,p) => s === p).length; return n === st.order.length ? {ok:true} : {ok:false, msg:t('orderSome', {n, total:st.order.length})}; },
+    answers(d){ return `<ol>${d.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>`; }
+  },
+  riddles:{
+    render(el, d, st, h){ wordCards(el, d.items, st, h, 'riddles'); },
+    check(d, st){ return wordCheck(d.items, st); },
+    answers(d){ return `<ol>${d.items.map(it => `<li>${esc(it.a[0])}${it.a.length > 1 ? ` <i>(${esc(it.a.slice(1).join(', '))})</i>` : ''}</li>`).join('')}</ol>`; }
+  },
+  anagram:{
+    render(el, d, st, h){ wordCards(el, d.items, st, h, 'anagram'); },
+    check(d, st){ return wordCheck(d.items, st); },
+    answers(d){ return `<ol>${d.items.map(it => `<li>${esc(it.s)} → <b>${esc(it.a[0])}</b> <i>(${esc(it.clue)})</i></li>`).join('')}</ol>`; }
+  },
+  errors:{
+    render(el, d, st, h){
+      const P = parseDiary(d.text), sel = new Set(st.sel || []);
+      const glow = h >= 2 ? P.errs[0] : -1;
+      el.innerHTML = `<p class="diary">${P.toks.map(tk => tk.raw != null ? esc(tk.raw) :
+        `${esc(tk.pre)}<button type="button" class="w${sel.has(tk.k) ? ' sel' : ''}${tk.k === glow ? ' glow' : ''}" data-k="${tk.k}" aria-pressed="${sel.has(tk.k)}">${esc(tk.w)}</button>${esc(tk.post)}`).join(' ')}</p>
+        <p class="counter"><span>${esc(t('errorsCount', {n:P.errs.length}))}</span><span id="marked">${esc(t('errorsMarked', {n:sel.size}))}</span></p>`;
+      el.onclick = e => {
+        const b = e.target.closest('.w'); if (!b) return;
+        const k = +b.dataset.k; sel.has(k) ? sel.delete(k) : sel.add(k); st.sel = [...sel]; save();
+        b.classList.toggle('sel', sel.has(k)); b.setAttribute('aria-pressed', sel.has(k)); Snd.tick();
+        $('#marked', el).textContent = t('errorsMarked', {n:sel.size});
+      };
+    },
+    check(d, st){
+      const P = parseDiary(d.text), sel = new Set(st.sel || []), errs = new Set(P.errs);
+      const found = [...sel].filter(k => errs.has(k)).length, extra = sel.size - found;
+      if (found === errs.size && !extra) return {ok:true};
+      if (!sel.size) return {ok:false, msg:t('errorsFound', {n:0, total:errs.size}), quiet:true};
+      let msg = t('errorsFound', {n:found, total:errs.size}); if (extra) msg += ' ' + t('errorsExtra', {n:extra});
+      return {ok:false, msg};
+    },
+    review(d){
+      const P = parseDiary(d.text);
+      return `<div class="review"><h3>${esc(t('correctedDiary'))}</h3><p class="diary">${P.toks.map(tk => tk.raw != null ? esc(tk.raw) :
+        esc(tk.pre) + (tk.fix ? `<span class="fix"><s>${esc(tk.w)}</s><ins>${esc(tk.fix)}</ins></span>` : esc(tk.w)) + esc(tk.post)).join(' ')}</p></div>`;
+    },
+    answers(d){ const P = parseDiary(d.text); return `<ol>${P.errs.map(k => `<li>${esc(P.words[k].w)} → <b>${esc(P.words[k].fix)}</b></li>`).join('')}</ol>`; }
+  },
+  path:{
+    noCheck:true,
+    render(el, d, st, h, api){
+      st.step = st.step || 0; st.att = st.att || 0;
+      const n = d.steps.length, s = d.steps[st.step];
+      const key = st.step + '-' + st.att;
+      if (!st.ord || st.ordKey !== key || st.ord.length !== s.o.length){
+        let o = shuffled(s.o.length);
+        for (let tries = 0; tries < 4 && o.indexOf(s.c) === st.lastPos; tries++) o = shuffled(s.o.length);
+        st.ord = o; st.ordKey = key; st.lastPos = o.indexOf(s.c); save();
+      }
+      const order = st.ord;
+      const crossed = h >= 2 ? s.o.findIndex((o, j) => j !== s.c) : -1;
+      el.innerHTML = `<div class="trail" aria-hidden="true">${d.steps.map((_, k) => `<i class="${k < st.step ? 'done' : k === st.step ? 'now' : ''}"></i>`).join('')}<span>${esc(t('pathProgress', {k:st.step+1, n}))}</span></div>
+        ${st.step ? `<ol class="done-lines">${d.steps.slice(0, st.step).map(x => `<li>${esc(x.s).replace('___', `<b>${esc(x.o[x.c])}</b>`)}</li>`).join('')}</ol>` : ''}
+        <div class="signpost">${esc(s.s).replace('___', '<span class="blank" aria-label="blank"></span>')}</div>
+        <div class="forks">${order.map(j => `<button type="button" class="fork${j === crossed ? ' crossed' : ''}" data-j="${j}" ${j === crossed ? 'disabled' : ''}>${esc(s.o[j])}</button>`).join('')}</div>`;
+      el.onclick = e => {
+        const b = e.target.closest('.fork'); if (!b || b.disabled) return;
+        const j = +b.dataset.j;
+        if (j === s.c){ st.step++; save(); if (st.step >= n){ api.solve(); return; } Snd.tick(); api.fb(t('pathGood'), 'ok'); PUZ.path.render(el, d, st, h, api); }
+        else { st.step = 0; st.att++; save(); Snd.bad(); api.fb(t('pathWrong'), 'bad'); PUZ.path.render(el, d, st, h, api); shake(el); makeNoise(22); }
+      };
+    },
+    review(d){ return `<div class="review"><h3>${esc(t('forestPath'))}</h3><ol class="done-lines">${d.steps.map(x => `<li>${esc(x.s).replace('___', `<b>${esc(x.o[x.c])}</b>`)}</li>`).join('')}</ol></div>`; },
+    answers(d){ return `<ol>${d.steps.map(x => `<li>${esc(x.s).replace('___', `<b>${esc(x.o[x.c])}</b>`)}</li>`).join('')}</ol>`; }
+  },
+  mirror:{
+    render(el, d, st, h){
+      el.innerHTML = `<div class="mirror"><div class="glass"><p class="mtext mode-${esc(d.mode)}">${esc(d.display)}</p></div></div>
+        <div class="wcard ${st.res || ''}" style="margin-top:16px"><div class="wrow"><span class="mark" aria-hidden="true">${st.res === 'bad' ? '✗' : ''}</span>
+        <label class="sr" for="mir">${esc(t('yourAnswer'))}</label><input id="mir" type="text" autocomplete="off" spellcheck="false" placeholder="${esc(t('yourAnswer'))}" value="${esc(st.inp || '')}"></div></div>`;
+      const i = $('#mir', el); i.addEventListener('input', () => { st.inp = i.value; save(); }); i.addEventListener('keydown', e => { if (e.key === 'Enter') doCheck(); });
+    },
+    check(d, st){ if (!norm(st.inp)) return {ok:false, msg:t('emptyAns'), quiet:true}; if (matches(st.inp, d.a)) return {ok:true}; st.res = 'bad'; return {ok:false, msg:t('wrong'), rerender:true}; },
+    answers(d){ return `<p>${esc(d.display)}<br>= “${esc(d.text)}”<br><b>${esc(d.a.join(' / '))}</b></p>`; }
+  },
+  door:{
+    render(el, d, st, h){
+      const letters = DATA.rooms.slice(0, 6).map(r => r.letter), word = d.word.split(''), used = [];
+      const pos = letters.map(l => { const k = word.findIndex((c, j) => c === l && !used.includes(j)); used.push(k); return k + 1; });
+      const nums = h >= 2;
+      el.innerHTML = `<p class="meta">${esc(t('yourLetters'))}</p>
+        <div class="tiles" style="margin:6px 0 14px">${letters.map((l, k) => `<button type="button" class="tile" data-l="${l}" aria-label="${l}">${l}${nums ? `<sup>${pos[k]}</sup>` : ''}</button>`).join('')}</div>
+        <div class="wcard ${st.res || ''}"><div class="wrow"><span class="mark" aria-hidden="true">${st.res === 'bad' ? '✗' : ''}</span>
+        <label class="sr" for="door-in">${esc(t('password'))}</label><input id="door-in" type="text" autocomplete="off" spellcheck="false" placeholder="${esc(t('password'))}" value="${esc(st.inp || '')}"></div></div>`;
+      const i = $('#door-in', el);
+      i.addEventListener('input', () => { st.inp = i.value; save(); }); i.addEventListener('keydown', e => { if (e.key === 'Enter') doCheck(); });
+      el.onclick = e => { const b = e.target.closest('[data-l]'); if (!b) return; i.value += b.dataset.l; st.inp = i.value; save(); Snd.tick(); };
+    },
+    check(d, st){ if (!norm(st.inp)) return {ok:false, msg:t('emptyAns'), quiet:true}; if (matches(st.inp, d.a)) return {ok:true}; st.res = 'bad'; return {ok:false, msg:t('doorWrong'), rerender:true}; },
+    answers(d){ return `<p><b>${esc(d.word)}</b></p>`; }
+  }
+};
+
+/* ================= views ================= */
+const VIEWS = ['map','room','win','caught'];
+function showView(v){
+  S.view = v; save();
+  VIEWS.forEach(x => $('#view-' + x).hidden = x !== v);
+  renderView();
+  window.scrollTo({top:0, behavior: reduced ? 'auto' : 'smooth'});
+}
+function renderView(){
+  const v = S.view;
+  if (v === 'map') renderMap(); else if (v === 'room') renderRoom(); else if (v === 'win') renderWin(); else if (v === 'caught') renderCaught();
+}
+function applyStatic(){
+  document.documentElement.lang = S.lang === 'no' ? 'nb' : 'en';
+  $$('[data-t]').forEach(n => n.textContent = t(n.dataset.t));
+  $$('[data-tph]').forEach(n => n.placeholder = t(n.dataset.tph));
+  $$('[data-lang]').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === S.lang));
+  $('#music-btn span').textContent = t(S.music ? 'musicOn' : 'musicOff');
+  $('#music-btn').setAttribute('aria-pressed', S.music);
+  $('#sfx-btn span').textContent = t(S.sfx ? 'sfxOn' : 'sfxOff');
+  $('#sfx-btn').setAttribute('aria-pressed', S.sfx);
+  buildSetup();
+}
+function renderBar(){
+  const inGame = S.phase === 'play' || S.phase === 'won' || S.phase === 'caught';
+  $('#game-info').hidden = !inGame;
+  $('#points').textContent = S.points;
+  renderSus();
+  $('#tray').innerHTML = DATA.rooms.slice(0, 6).map((r, i) => `<span class="slot${S.solved[i] ? ' got' : ''}">${S.solved[i] ? r.letter : ''}</span>`).join('');
+  renderTimer();
+}
+function renderTimer(){
+  const r = remaining(), el = $('#timer');
+  el.textContent = S.timeUp && S.phase === 'play' ? '00:00' : fmt(r);
+  el.classList.toggle('low', S.phase === 'play' && r < 10*60000);
+  el.classList.toggle('paused', S.paused != null && S.phase === 'play');
+}
+function renderMap(){
+  const closed = S.phase === 'closed';
+  $('#closed').hidden = !closed; $('#closed').style.opacity = '';
+  $('#folds').style.opacity = closed ? 1 : 0;
+  $('#map-head').style.opacity = closed ? 0 : 1;
+  svg.classList.toggle('blank', closed);
+  $('#map-foot').hidden = S.phase !== 'play';
+  updateMapText(); updateMapState();
+  if (S.phase === 'play'){
+    const cur = firstOpen();
+    $('#objective').textContent = t('objective');
+    $('#next').innerHTML = cur < 7 ? `<span>${esc(t('nextStop'))} <b>${esc(roomName(cur))}</b></span><button class="btn" type="button" id="enter-btn">${esc(t('enter'))}</button>` : '';
+    const b = $('#enter-btn'); if (b) b.onclick = () => openRoom(cur);
+    maybeEvent();
+  }
+}
+function openRoom(i){
+  if (S.phase === 'won'){ showView('win'); return; }
+  if (S.phase === 'caught'){ showView('caught'); return; }
+  if (S.phase !== 'play') return;
+  if (i > firstOpen()){ toast(t('lockedRoom', {room:roomName(firstOpen())})); Snd.bad(); return; }
+  S.room = i; Snd.page(); showView('room');
+}
+const api = {
+  solve(){ solveRoom(S.room); },
+  fb(msg, cls){ const f = $('#feedback'); f.textContent = msg || ''; f.className = 'feedback ' + (cls || ''); }
+};
+function renderRoom(){
+  const i = S.room, id = ROOMS[i], room = DATA.rooms[i], d = roomData(i), P = PUZ[room.type];
+  $('#room-kicker').textContent = S.solved[i] ? t('solvedKicker') : (i === 6 ? t('roomKickerFinal') : t('roomKicker', {n:i+1}));
+  $('#room-name').textContent = roomName(i);
+  $('#room-story').textContent = t(`rooms.${id}.story`);
+  $('#room-play').hidden = S.solved[i];
+  $('#room-done').hidden = !S.solved[i];
+  if (S.solved[i]){
+    $('#room-done').innerHTML = `<div class="big-letter" aria-hidden="true">${esc(room.letter)}</div>
+      <p class="story" style="margin:0">${esc(t('letterFound', {l:room.letter}))}</p><p class="meta" style="margin:0">${esc(t('letterNote'))}</p>
+      ${P.review ? P.review(d) : ''}
+      <button class="btn" type="button" id="done-back">${esc(t('back'))}</button>`;
+    $('#done-back').onclick = () => { Snd.page(); showView('map'); };
+    return;
+  }
+  $('#room-instr').textContent = t(`rooms.${id}.instr`);
+  $('#check-btn').hidden = !!P.noCheck;
+  api.fb('');
+  P.render($('#puzzle'), d, rs(i), hintsUsed(i), api);
+  renderHints();
+}
+function renderHints(){
+  const i = S.room, h = hintsUsed(i), type = DATA.rooms[i].type, cost = hintCost(i);
+  const b = $('#hint-btn');
+  b.disabled = h >= 2;
+  b.textContent = h >= 2 ? t('noHints') : `${t('hint')} (${cost ? t('hintCost', {n:cost}) : t('hintFree')})`;
+  const cards = [];
+  const d = roomData(i);
+  const h1 = type === 'door' ? t('doorClue.' + S.diff) : type === 'mirror' ? t('mirrorHint1') : t('rooms.' + ROOMS[i] + '.hint');
+  const h2 = type === 'mirror' ? t('mirrorHint2.' + d.mode) + ' ' + t('mirrorBegins', {w:d.text.split(' ').slice(0, 3).join(' ')}) : t('reveal.' + type);
+  if (h >= 1) cards.push(`<div class="hint-card"><b>${esc(t('hintN', {n:1}))}</b>${esc(h1)}</div>`);
+  if (h >= 2) cards.push(`<div class="hint-card"><b>${esc(t('hintN', {n:2}))}</b>${esc(h2)}</div>`);
+  $('#hints').innerHTML = cards.join('');
+}
+function useHint(){
+  const i = S.room; if (hintsUsed(i) >= 2) return;
+  S.points -= hintCost(i); S.hints[i] = hintsUsed(i) + 1; save();
+  Snd.magic(); renderBar();
+  if (S.hints[i] === 2) PUZ[DATA.rooms[i].type].render($('#puzzle'), roomData(i), rs(i), 2, api);
+  renderHints();
+}
+function doCheck(){
+  const i = S.room, room = DATA.rooms[i], P = PUZ[room.type], d = roomData(i), st = rs(i);
+  if (S.solved[i] || P.noCheck) return;
+  const r = P.check(d, st); save();
+  if (r.ok){ solveRoom(i); return; }
+  Snd.bad(); api.fb(r.msg, 'bad'); shake($('#puzzle'));
+  if (!r.quiet) makeNoise(27);
+  if (r.rerender){ const focusId = document.activeElement && document.activeElement.id; P.render($('#puzzle'), d, st, hintsUsed(i), api); if (focusId){ const f = document.getElementById(focusId); if (f) f.focus(); } }
+}
+function solveRoom(i, byTeacher){
+  if (S.solved[i]) return;
+  S.solved[i] = true;
+  if (byTeacher) S.teacherSolved++; else S.points += 25;
+  if (i === 6){
+    S.phase = 'won'; S.wonAt = Date.now(); S.wonLeft = Math.max(0, remaining()); S.paused = S.wonLeft;
+    if (!S.timeUp && !byTeacher) S.points += 50 + Math.floor(S.wonLeft / 60000);
+    save(); Snd.magic(); renderBar(); showView('win'); return;
+  }
+  save(); if (!byTeacher) Snd.ok(); renderBar();
+  if (!$('#view-room').hidden && S.room === i) renderRoom(); else if (!$('#view-map').hidden) renderMap();
+}
+function renderWin(){
+  const used = S.wonAt && S.startedAt ? S.wonAt - S.startedAt : GAME - (S.wonLeft || 0);
+  $('#win-body').textContent = t('winBody') + (S.timeUp ? ' ' + t('winLate') : '');
+  const st = t('stats');
+  const rows = [[st.team, S.team || t('teamDefault')], [st.house, t('houses.' + S.house)], [st.diff, t('diffs.' + S.diff + '.name')],
+    [st.used, fmt(Math.max(0, used))], [st.left, S.timeUp ? '00:00' : fmt(S.wonLeft || 0)], [st.points, S.points], [st.hints, totalHints()]];
+  $('#stats').innerHTML = rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('');
+  $('#win-code').innerHTML = reportHtml();
+}
+function renderCaught(){
+  $('#scene').innerHTML = t('caughtLines').map((l, i) => `<p class="${i === 3 ? 'map-line' : ''}" style="--i:${i}">${esc(l)}</p>`).join('');
+  $('#caught-sheet').classList.toggle('instant', !!S.caughtSeen || reduced);
+  $('#scene-skip').hidden = !!S.caughtSeen;
+  if (!S.caughtSeen){ S.caughtSeen = true; save(); }
+  const st = t('stats');
+  const rows = [[st.team, S.team || t('teamDefault')], [st.house, t('houses.' + S.house)], [st.diff, t('diffs.' + S.diff + '.name')],
+    [t('lettersFound'), S.solved.slice(0, 6).filter(Boolean).length + '/6'], [st.points, S.points], [st.hints, totalHints()]];
+  $('#caught-stats').innerHTML = rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('');
+  $('#caught-code').innerHTML = reportHtml();
+}
+$('#scene-skip').addEventListener('click', () => { $('#caught-sheet').classList.add('instant'); $('#scene-skip').hidden = true; });
+function getCaught(){
+  if (S.phase !== 'play') return;
+  S.phase = 'caught'; S.timeUp = true; S.paused = 0; S.caughtSeen = false;
+  if (evOpen) closeEvent('skipped');
+  ['#modal-alert','#modal-event','#modal-notice'].forEach(m => $(m).hidden = true);
+  save(); Snd.doom(); renderBar(); showView('caught');
+}
+
+/* ================= setup ================= */
+const HOUSES = ['gryffindor','hufflepuff','ravenclaw','slytherin'];
+const HOUSE_VAR = {gryffindor:'--gryf', hufflepuff:'--huff', ravenclaw:'--rave', slytherin:'--slyt'};
+function buildSetup(){
+  $('#houses').innerHTML = HOUSES.map(h => `<label class="choice"><input type="radio" name="house" value="${h}" ${S.house === h ? 'checked' : ''}><span><i class="house-dot" style="background:var(${HOUSE_VAR[h]})"></i>${esc(t('houses.' + h))}</span></label>`).join('');
+  $('#diffs').innerHTML = ['easy','medium','hard'].map(d => `<label class="choice"><input type="radio" name="diff" value="${d}" ${S.diff === d ? 'checked' : ''}><span><b>${esc(t('diffs.' + d + '.name'))}</b><small>${esc(t('diffs.' + d + '.desc'))}</small></span></label>`).join('');
+  $$('#houses input').forEach(r => r.onchange = () => { S.house = r.value; save(); });
+  $$('#diffs input').forEach(r => r.onchange = () => { S.diff = r.value; save(); });
+  const team = $('#team'); if (document.activeElement !== team) team.value = S.team || '';
+}
+$('#team').addEventListener('input', e => { S.team = e.target.value.trim().slice(0, 40); save(); });
+$('#setup-form').addEventListener('submit', e => {
+  e.preventDefault();
+  S.team = $('#team').value.trim().slice(0, 40) || t('teamDefault');
+  S.phase = 'play'; S.startedAt = Date.now(); S.endAt = Date.now() + GAME; S.paused = null;
+  save(); $('#modal-notice').hidden = true; Snd.page(); renderBar(); showView('map');
+});
+
+/* ================= opening the map ================= */
+function phraseOk(v){
+  const n = norm(v).replace(/\bim\b/g, 'i am');
+  return DATA.pass.some(p => lev(n, p) <= 5);
+}
+let insultN = 0;
+$('#phrase-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = $('#phrase').value;
+  if (phraseOk(v)){ Snd.ensure(); revealMap(); return; }
+  const ins = $('#insult'), list = t('insults');
+  ins.textContent = list[insultN++ % list.length]; ins.classList.remove('show'); void ins.offsetWidth; ins.classList.add('show');
+  Snd.bad(); shake($('#phrase'));
+});
+function revealMap(){
+  S.phase = 'setup'; save();
+  $('#closed').style.opacity = 0;
+  $('#bloom').classList.remove('go'); void $('#bloom').offsetWidth; $('#bloom').classList.add('go'); setTimeout(() => $('#bloom').classList.remove('go'), 2000);
+  Snd.magic();
+  setTimeout(() => {
+    $('#closed').hidden = true;
+    $('#folds').style.opacity = 0;
+    svg.classList.add('drawing'); svg.classList.remove('blank');
+    $('#map-head').style.opacity = 1;
+    updateMapText(); updateMapState();
+  }, 600);
+  setTimeout(() => { $('#modal-notice').hidden = false; Snd.page(); $('#team').focus(); }, reduced ? 800 : 4200);
+  setTimeout(() => svg.classList.remove('drawing'), 6000);
+}
+['#wipe-form','#wipe-form2'].forEach(f => $(f).addEventListener('submit', e => {
+  e.preventDefault();
+  const inp = $('input', e.target);
+  if (lev(norm(inp.value), DATA.wipe) > 3){ shake(inp); Snd.bad(); return; }
+  resetGame();
+}));
+function resetGame(){
+  const prev = S; S = fresh(prev); save();
+  $('#phrase').value = ''; $('#wipe').value = ''; $('#wipe2').value = ''; $('#insult').textContent = ''; stopEvTimer(); evOpen = null;
+  $$('.modal').forEach(m => m.hidden = true);
+  applyStatic(); renderBar(); showView('map'); Snd.page();
+}
+
+/* ================= top bar controls ================= */
+$$('[data-lang]').forEach(b => b.addEventListener('click', () => {
+  S.lang = b.dataset.lang; save(); applyStatic(); renderBar();
+  renderView();
+  if (!$('#modal-teacher').hidden) renderTeacher();
+  if (!$('#modal-board').hidden) renderBoard();
+  if (evOpen) renderEvent(evOpen);
+  if (!$('#modal-alert').hidden && alertKind) showAlert(alertKind, alertVars);
+}));
+$('#music-btn').addEventListener('click', () => { S.music = !S.music; save(); S.music ? Snd.startMusic() : Snd.stopMusic(); applyStatic(); });
+$('#sfx-btn').addEventListener('click', () => { S.sfx = !S.sfx; save(); applyStatic(); Snd.tick(); });
+document.addEventListener('pointerdown', () => { if (S.music && !Snd.playing()) Snd.startMusic(); }, {passive:true});
+document.addEventListener('keydown', () => { if (S.music && !Snd.playing()) Snd.startMusic(); });
+$('#check-btn').addEventListener('click', doCheck);
+$('#hint-btn').addEventListener('click', useHint);
+$('#back-btn').addEventListener('click', () => { Snd.page(); showView('map'); });
+$$('[data-close]').forEach(b => b.addEventListener('click', () => b.closest('.modal').hidden = true));
+
+/* ================= teacher ================= */
+let sealClicks = [];
+$('#seal').addEventListener('click', () => {
+  const now = Date.now(); sealClicks = sealClicks.filter(x => now - x < 3000); sealClicks.push(now);
+  if (sealClicks.length >= 5){ sealClicks = []; $('#pin').value = ''; $('#pin-msg').textContent = ''; $('#modal-pin').hidden = false; $('#pin').focus(); }
+});
+$('#pin-form').addEventListener('submit', e => {
+  e.preventDefault();
+  if ($('#pin').value.trim() === DATA.pin){ $('#modal-pin').hidden = true; renderTeacher(); $('#modal-teacher').hidden = false; }
+  else { $('#pin-msg').textContent = t('pinWrong'); shake($('#pin')); }
+});
+let resetArmed = false;
+function renderTeacher(){
+  const solvedN = S.solved.filter(Boolean).length;
+  $('#tp-status').textContent = S.phase === 'play' || S.phase === 'won' || S.phase === 'caught'
+    ? t('tStatus', {team:S.team || t('teamDefault'), house:t('houses.' + S.house), diff:t('diffs.' + S.diff + '.name'), n:solvedN, h:totalHints()})
+      + (S.phase === 'play' ? '' : ' · ' + t('tCodeHere', {c:makeCode()}))
+    : t('tNotStarted');
+  const B = [['solve','tSolve'],['all','tSolveAll'],['plus','tPlus'],['minus','tMinus'],['pause', S.paused != null ? 'tResume' : 'tPause'],['up','tPtsUp'],['down','tPtsDown'],['reset', resetArmed ? 'tResetSure' : 'tReset']];
+  $('#tp-btns').innerHTML = B.map(([a, k]) => `<button class="btn${a === 'reset' ? '' : ' ghost'}" type="button" data-a="${a}" ${a !== 'reset' && S.phase !== 'play' && !(S.phase === 'caught' && a === 'plus') ? 'disabled' : ''}>${esc(t(k))}</button>`).join('');
+  const sel = $('#tp-diff'); $$('option', sel).forEach(o => o.textContent = t('diffs.' + o.value + '.name')); sel.value = S.diff;
+  $('#tp-ans-h').textContent = t('tAnswers', {diff:t('diffs.' + S.diff + '.name')});
+  $('#tp-ans').innerHTML = ROOMS.map((id, i) => `<h4>${i+1}. ${esc(roomName(i))}${DATA.rooms[i].letter ? ` · ${esc(DATA.rooms[i].letter)}` : ''}</h4>${PUZ[DATA.rooms[i].type].answers(roomData(i))}`).join('')
+    + ['hagrid','dumbledore'].map(id => `<h4>${esc(t('ev.' + id + '.name'))}</h4><ol>${DATA.events[id][S.diff].map(q => `<li>${esc(q.q)} → <b>${esc(q.o[q.c])}</b></li>`).join('')}</ol>`).join('')
+    + `<h4>PIN</h4><p>${esc(DATA.pin)}</p>`;
+  renderResults();
+}
+$('#tp-btns').addEventListener('click', e => {
+  const b = e.target.closest('[data-a]'); if (!b) return;
+  const a = b.dataset.a;
+  if (a !== 'reset') resetArmed = false;
+  if (a === 'solve'){ const i = firstOpen(); if (i < 7) solveRoom(i, true); }
+  else if (a === 'all'){ for (let i = 0; i < 6; i++) if (!S.solved[i]){ S.solved[i] = true; S.teacherSolved++; } save(); renderBar(); }
+  else if (a === 'plus') addTime(5*60000);
+  else if (a === 'minus') addTime(-5*60000);
+  else if (a === 'pause'){ if (S.paused != null){ S.endAt = Date.now() + S.paused; S.paused = null; } else S.paused = remaining(); }
+  else if (a === 'up') S.points += 10;
+  else if (a === 'down') S.points -= 10;
+  else if (a === 'reset'){ if (!resetArmed){ resetArmed = true; renderTeacher(); return; } resetArmed = false; resetGame(); return; }
+  if (S.phase === 'caught' && remaining() > 0){ S.phase = 'play'; S.timeUp = false; S.endAt = Date.now() + remaining(); S.paused = null; save(); renderBar(); showView('map'); renderTeacher(); return; }
+  save(); renderBar();
+  if (S.phase === 'won') showView('win'); else renderView();
+  renderTeacher();
+});
+$('#tp-diff').addEventListener('change', e => {
+  S.diff = e.target.value; S.rs = {}; save(); renderTeacher();
+  if (!$('#view-room').hidden) renderRoom();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape'){ ['#modal-pin','#modal-teacher','#modal-board'].forEach(s => $(s).hidden = true); }
+});
+
+/* ================= Snape's suspicion ================= */
+function noiseNow(){ const n = S.noise || 0; return n ? Math.max(0, n - (Date.now() - (S.noiseT || 0)) / 2000) : 0; }
+function renderSus(){
+  const v = noiseNow();
+  $('#sus-fill').style.width = Math.min(100, v) + '%';
+  $('#sus').classList.toggle('hot', v >= 50);
+  if (v < 25 && S.noiseWarned){ S.noiseWarned = false; save(); }
+}
+function minutesText(n){ return n === 1 ? t('minute1') : t('minuteN', {n}); }
+function makeNoise(n){
+  if (S.phase !== 'play') return;
+  let v = noiseNow() + n; S.noiseT = Date.now();
+  if (v >= 100){
+    const mins = S.diff === 'easy' ? 1 : 2;
+    S.noise = 30; S.noiseWarned = true; S.penalties = (S.penalties || 0) + 1;
+    addTime(-mins * 60000); save(); renderSus(); renderTimer(); Snd.doom();
+    if (remaining() <= 0){ getCaught(); return; }
+    showAlert('pen', {t:minutesText(mins)}); return;
+  }
+  S.noise = v;
+  if (v >= 50 && !S.noiseWarned){ S.noiseWarned = true; save(); renderSus(); Snd.chime(); showAlert('warn'); return; }
+  save(); renderSus();
+}
+let alertKind = null, alertVars = null;
+function showAlert(kind, vars){
+  alertKind = kind; alertVars = vars;
+  $('#al-kicker').textContent = t('alertKicker');
+  $('#al-title').textContent = t(kind + 'Title');
+  $('#al-body').textContent = t(kind + 'Body', vars);
+  $('#al-btn').textContent = t(kind + 'Btn');
+  $('#modal-alert').hidden = false; $('#al-btn').focus();
+}
+$('#al-btn').addEventListener('click', () => { $('#modal-alert').hidden = true; alertKind = null; });
+
+/* ================= character events ================= */
+const EVENTS = [{id:'hagrid', after:1}, {id:'dumbledore', after:3}];
+const EV_TIME = 90000;
+let evOpen = null, evTimer = null, evScheduled = false;
+function maybeEvent(){
+  if (S.phase !== 'play' || evOpen) return;
+  S.ev = S.ev || {};
+  if (evScheduled) return;
+  const e = EVENTS.find(x => S.solved[x.after] && (!S.ev[x.id] || S.ev[x.id].state === 'pending'));
+  if (!e) return;
+  const qs = DATA.events[e.id][S.diff];
+  if (!S.ev[e.id]) { S.ev[e.id] = {state:'pending', ans:[], ord:qs.map(q => shuffled(q.o.length))}; save(); }
+  evScheduled = true;
+  setTimeout(() => { evScheduled = false; if (S.phase === 'play' && S.ev[e.id] && S.ev[e.id].state === 'pending'){ S.ev[e.id].state = 'active'; S.ev[e.id].end = Date.now() + EV_TIME; save(); openEvent(e.id); } }, 1400);
+}
+function openEvent(id){ evOpen = id; renderEvent(id); $('#modal-event').hidden = false; Snd.chime(); startEvTimer(); }
+function stopEvTimer(){ clearInterval(evTimer); evTimer = null; }
+function startEvTimer(){
+  stopEvTimer();
+  const tickEv = () => {
+    const ev = evOpen && S.ev[evOpen]; if (!ev || ev.state !== 'active'){ stopEvTimer(); $('#ev-timer').textContent = ''; return; }
+    const left = ev.end - Date.now();
+    $('#ev-timer').textContent = fmt(left);
+    if (left <= 0) submitEvent(evOpen, true);
+  };
+  tickEv(); evTimer = setInterval(tickEv, 250);
+}
+function renderEvent(id){
+  const ev = S.ev[id], qs = DATA.events[id][S.diff], done = ev.state === 'done';
+  $('#ev-kicker').textContent = t('ev.' + id + '.kicker');
+  $('#ev-title').textContent = t('ev.' + id + '.name');
+  $('#ev-story').textContent = t('ev.' + id + '.story');
+  $('#ev-instr').textContent = t('ev.' + id + '.instr');
+  $('#ev-instr').hidden = done;
+  $('#ev-qs').innerHTML = qs.map((q, k) => `<div class="evq"><p>${k+1}. ${esc(q.q)}</p><div class="evopts">${(ev.ord[k] || q.o.map((_, j) => j)).map(j => {
+    let cls = '';
+    if (done){ if (j === q.c) cls = ' right'; else if (ev.ans[k] === j) cls = ' wrong'; }
+    return `<button type="button" class="evopt${cls}" data-q="${k}" data-o="${j}" aria-pressed="${ev.ans[k] === j}" ${done ? 'disabled' : ''}>${esc(q.o[j])}</button>`;
+  }).join('')}</div></div>`).join('');
+  if (done){
+    const n = ev.n || 0, house = t('houses.' + S.house);
+    const msg = t('evScore', {n, total:qs.length}) + ' ' + (n ? t('ev.' + id + '.reward', {n:n*10, t:minutesText(n), house}) : t('ev.' + id + '.none'));
+    $('#ev-fb').textContent = (ev.timeout ? t('evTimeout') + ' ' : '') + msg; $('#ev-fb').className = 'feedback ' + (n ? 'ok' : 'bad');
+    $('#ev-actions').innerHTML = `<button class="btn" type="button" id="ev-close">${esc(t('evContinue'))}</button>`;
+    $('#ev-close').onclick = () => closeEvent();
+    $('#ev-timer').textContent = '';
+  } else {
+    $('#ev-fb').textContent = ''; $('#ev-fb').className = 'feedback';
+    $('#ev-actions').innerHTML = `<button class="btn" type="button" id="ev-submit">${esc(t('evAnswer'))}</button><button class="btn ghost" type="button" id="ev-skip">${esc(t('ev.' + id + '.skip'))}</button>`;
+    $('#ev-submit').onclick = () => submitEvent(id, false);
+    $('#ev-skip').onclick = () => { closeEvent('skipped'); toast(t('evSkipped')); };
+  }
+}
+$('#ev-qs').addEventListener('click', e => {
+  const b = e.target.closest('.evopt'); if (!b || b.disabled || !evOpen) return;
+  const ev = S.ev[evOpen]; ev.ans[+b.dataset.q] = +b.dataset.o; save(); Snd.tick();
+  $$(`.evopt[data-q="${b.dataset.q}"]`).forEach(x => x.setAttribute('aria-pressed', x === b));
+});
+function submitEvent(id, timeout){
+  const ev = S.ev[id]; if (!ev || ev.state !== 'active') return;
+  const qs = DATA.events[id][S.diff];
+  const n = qs.reduce((a, q, k) => a + (ev.ans[k] === q.c ? 1 : 0), 0);
+  ev.state = 'done'; ev.n = n; ev.timeout = !!timeout;
+  if (id === 'hagrid' && n) addTime(n * 60000);
+  if (id === 'dumbledore') S.points += n * 10;
+  save(); stopEvTimer(); renderBar(); renderEvent(id);
+  n ? Snd.ok() : Snd.bad();
+}
+function closeEvent(state){
+  if (evOpen && state && S.ev[evOpen] && S.ev[evOpen].state !== 'done') S.ev[evOpen].state = state;
+  save(); stopEvTimer(); evOpen = null; $('#modal-event').hidden = true;
+}
+
+/* ================= report codes and class results ================= */
+const B32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ', DIFFS = ['easy','medium','hard'];
+function codeHash(v){ let h = 2166136261; for (const c of v.toString() + '|nox'){ h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) >>> 0; } return h % 1024; }
+function makeCode(){
+  const h = Math.max(0, HOUSES.indexOf(S.house)), d = Math.max(0, DIFFS.indexOf(S.diff)), r = S.solved.filter(Boolean).length, e = S.phase === 'won' ? 1 : 0;
+  const left = Math.min(1023, Math.round((S.phase === 'won' ? S.wonLeft || 0 : 0) / 5000)), p = Math.max(0, Math.min(1023, S.points + 300)), n = Math.min(31, totalHints());
+  let v = BigInt(h); v = v * 4n + BigInt(d); v = v * 8n + BigInt(r); v = v * 2n + BigInt(e); v = v * 1024n + BigInt(left); v = v * 1024n + BigInt(p); v = v * 32n + BigInt(n);
+  let full = v * 1024n + BigInt(codeHash(v)), out = '';
+  for (let i = 0; i < 9; i++){ out = B32[Number(full % 32n)] + out; full /= 32n; }
+  return out.slice(0, 3) + '-' + out.slice(3, 6) + '-' + out.slice(6);
+}
+function readCode(str){
+  const c = String(str).toUpperCase().replace(/O/g, '0').replace(/[IL]/g, '1').replace(/U/g, 'V').replace(/[^0-9A-Z]/g, '');
+  if (c.length !== 9) return null;
+  let full = 0n; for (const ch of c){ const k = B32.indexOf(ch); if (k < 0) return null; full = full * 32n + BigInt(k); }
+  const chk = Number(full % 1024n); let v = full / 1024n; if (codeHash(v) !== chk) return null;
+  const n = Number(v % 32n); v /= 32n; const p = Number(v % 1024n) - 300; v /= 1024n; const left = Number(v % 1024n) * 5000; v /= 1024n;
+  const e = Number(v % 2n); v /= 2n; const r = Number(v % 8n); v /= 8n; const d = Number(v % 4n); v /= 4n; const h = Number(v);
+  if (h > 3 || d > 2) return null;
+  return {code:c, house:HOUSES[h], diff:DIFFS[d], rooms:r, escaped:!!e, left, points:p, hints:n};
+}
+function reportHtml(){ return `<span>${esc(t('reportL'))}</span><b>${esc(makeCode())}</b>`; }
+const RES_KEY = 'snapes-detention-results';
+function loadRes(){ try { return JSON.parse(localStorage.getItem(RES_KEY)) || []; } catch(e){ return []; } }
+function saveRes(list){ try { localStorage.setItem(RES_KEY, JSON.stringify(list)); } catch(e){} }
+let RES = loadRes(), clearArmed = false;
+const sortRes = list => list.slice().sort((a, b) => (b.escaped - a.escaped) || (b.points - a.points) || (b.left - a.left));
+function resultCell(r){ return r.escaped ? `<span class="esc">${esc(t('resEscaped'))}</span>` : `<span class="cau">${esc(t('resCaught', {n:Math.min(6, r.rooms)}))}</span>`; }
+function resTable(list, withRemove){
+  const c = t('col');
+  if (!list.length) return `<tbody><tr><td>${esc(t('tNoResults'))}</td></tr></tbody>`;
+  return `<thead><tr><th>#</th><th>${esc(c.team)}</th><th>${esc(c.house)}</th><th>${esc(c.level)}</th><th>${esc(c.result)}</th><th>${esc(c.left)}</th><th>${esc(c.points)}</th><th>${esc(c.hints)}</th>${withRemove ? '<th></th>' : ''}</tr></thead><tbody>`
+    + sortRes(list).map((r, i) => `<tr><td>${i+1}</td><td>${esc(r.team)}</td><td><i class="house-dot" style="background:var(${HOUSE_VAR[r.house]})"></i>${esc(t('houses.' + r.house))}</td><td>${esc(t('diffs.' + r.diff + '.name'))}</td><td>${resultCell(r)}</td><td>${r.escaped ? fmt(r.left) : '–'}</td><td>${r.points}</td><td>${r.hints}</td>${withRemove ? `<td><button class="x" type="button" data-code="${esc(r.code)}" aria-label="${esc(t('tRemove'))}">×</button></td>` : ''}</tr>`).join('') + '</tbody>';
+}
+function renderResults(){
+  $('#res-table').innerHTML = resTable(RES, true);
+  $('#res-clear').textContent = t(clearArmed ? 'tClearSure' : 'tClear');
+  $('#res-clear').disabled = !RES.length;
+}
+function renderBoard(){
+  const totals = HOUSES.map(h => ({h, p:RES.filter(r => r.house === h).reduce((a, r) => a + r.points, 0)})).sort((a, b) => b.p - a.p);
+  const max = Math.max(1, ...totals.map(x => x.p));
+  $('#bd-cup').innerHTML = totals.map(x => `<div class="cup-row"><b>${esc(t('houses.' + x.h))}</b><div class="cup-bar" style="width:${Math.max(0, x.p) / max * 100}%;background:var(${HOUSE_VAR[x.h]})"></div><span>${x.p}</span></div>`).join('');
+  $('#bd-table').innerHTML = resTable(RES, false);
+}
+$('#res-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const r = readCode($('#res-code').value), msg = $('#res-msg');
+  if (!r){ msg.textContent = t('tBadCode'); msg.className = 'feedback bad'; shake($('#res-code')); return; }
+  r.team = $('#res-team').value.trim().slice(0, 40) || t('teamDefault');
+  RES = RES.filter(x => x.code !== r.code).concat([r]); saveRes(RES);
+  msg.textContent = t('tAdded', {team:r.team}); msg.className = 'feedback ok';
+  $('#res-code').value = ''; $('#res-team').value = ''; $('#res-code').focus(); clearArmed = false; renderResults();
+});
+$('#res-table').addEventListener('click', e => {
+  const b = e.target.closest('[data-code]'); if (!b) return;
+  RES = RES.filter(x => x.code !== b.dataset.code); saveRes(RES); renderResults();
+});
+$('#res-clear').addEventListener('click', () => {
+  if (!clearArmed){ clearArmed = true; renderResults(); return; }
+  clearArmed = false; RES = []; saveRes(RES); renderResults();
+});
+$('#board-btn').addEventListener('click', () => {
+  RES = loadRes(); renderBoard(); $('#modal-teacher').hidden = true; $('#modal-board').hidden = false;
+  try { const q = document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); if (q && q.catch) q.catch(() => {}); } catch(err){}
+});
+
+/* ================= clock ================= */
+function tick(){
+  if (S.phase === 'play'){
+    const r = remaining();
+    if (r <= 0){ getCaught(); return; }
+    if (r > 0 && r <= 15*60000 && !S.warned.w15){ S.warned.w15 = 1; save(); toast(t('warn15')); Snd.chime(); }
+    if (r > 0 && r <= 5*60000 && !S.warned.w5){ S.warned.w5 = 1; save(); toast(t('warn5')); Snd.chime(); }
+  }
+  renderTimer(); renderSus();
+}
+
+/* ================= boot ================= */
+buildMap();
+applyStatic();
+renderBar();
+if (S.phase === 'won') showView('win');
+else if (S.phase === 'caught') showView('caught');
+else if (S.phase === 'play') showView(S.view === 'room' ? 'room' : 'map');
+else showView('map');
+if (S.phase === 'setup') $('#modal-notice').hidden = false;
+if (S.phase === 'play' && S.ev){ const act = Object.keys(S.ev).find(k => S.ev[k].state === 'active'); if (act) openEvent(act); }
+setInterval(tick, 500);
+walkTimer = setInterval(walkLoop, 480);
+walkLoop();
+})();
+</script>
+
+</body>
+</html>
