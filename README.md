@@ -1,10 +1,12 @@
 # Snape's Detention: A Digital Escape Room for the English Classroom
 
-**Play it here:** [https://bashclass.github.io/Escape-Room-Snapes-Detention/]
+**Play it here:** https://m3shuga.github.io/Escape-Room-Snapes-Detention/
 
 Snape’s Detention is a free digital escape room inspired by the world of Harry Potter, made for English teachers who want their students to learn through play. Students team up to escape Professor Snape’s detention by solving a series of English challenges: reading, vocabulary, grammar, riddles and more, all against the clock. With three difficulty levels, built-in hints and a class-wide House Cup, it turns a regular English lesson into an adventure. No accounts, no installation and no preparation needed. Just open the link and let the mischief begin.
 
 It was made for English lessons in lower secondary school (ages 13–16, grades 8–10), but works for any learners at roughly A2–B2 level.
+
+<img width="2752" height="1536" alt="Snapes_detention_poster" src="https://github.com/user-attachments/assets/e9370b78-4e28-45f4-870c-6ab67a904e88" />
 
 ---
 
@@ -12,7 +14,7 @@ It was made for English lessons in lower secondary school (ages 13–16, grades 
 
 | | |
 |---|---|
-| **Playing time** | About 45 minutes (one lesson) |
+| **Playing time** | Up to 45 minutes (can be extended if necessary) |
 | **Players** | Individually or in small teams, one computer per team |
 | **Devices** | Any computer or tablet with a modern browser (Chrome, Edge, Firefox, Safari). Works on Chromebooks. |
 | **Language support** | All instructions can be switched between English and Norwegian. The puzzles themselves are always in English. |
@@ -29,6 +31,7 @@ The challenges are built around everyday English-classroom skills:
 - proofreading
 - riddles and wordplay
 - idioms and expressions
+- (Hard difficulty only) Checking students' knowledge of Harry Potter lore. 
 
 ## Difficulty levels
 
@@ -64,7 +67,7 @@ When a team finishes, their screen shows a short **report code**. The teacher co
 
 The escape room includes a **hidden teacher panel**. From it you can see the answers, help a team that is stuck, adjust the time, manage the House Cup results and reset a computer for the next class.
 
-To keep it secret from students, the teacher panel and how to open it are **not described here**. If you are a teacher and would like access, contact [YOUR NAME / CONTACT INFO].
+To keep it secret from students, the teacher panel and how to open it are **not described here**. If you are a teacher and would like access, contact the creator, @m3shuga.
 
 ### Tips for the lesson
 
@@ -82,13 +85,13 @@ The whole escape room is a single file, `index.html`. You can:
 
 ## Privacy
 
-Everything is stored only in the browser on each computer, including team names, progress and the teacher's results board. No information is sent to the internet, to GitHub or to anyone else. Students should use team names rather than their full names.
+Everything is stored only in the browser on each computer, including team names, progress and the teacher's results board. No information is sent to the internet, to GitHub or to anyone else. NOTE: Students should still use team names rather than their full names.
 
 To remove all saved information from a computer, delete the website's data in the browser settings, or use the reset option in the teacher panel.
 
 ## License
 
-© 2026 baschclass
+© 2026 m3shuga
 
 This escape room is licensed under **Creative Commons BY-NC-SA 4.0**
 (https://creativecommons.org/licenses/by-nc-sa/4.0/).
@@ -104,4 +107,4 @@ This is an **unofficial, fan-made teaching resource**. It is not affiliated with
 
 ## Credits
 
-Created by baschclass, an English teacher in Norway, with the help of Claude (Anthropic).
+Created by m3shuga, an English teacher in Norway, with the help of Claude (Anthropic).
