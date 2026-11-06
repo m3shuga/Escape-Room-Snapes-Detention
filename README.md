@@ -1,8 +1,8 @@
 # Snape's Detention: A Digital Escape Room for the English Classroom
 
-**Play it here:** [LINK TO YOUR GITHUB PAGES SITE]
+**Play it here:** [https://bashclass.github.io/Escape-Room-Snapes-Detention/]
 
-*Snape's Detention* is a free, browser-based escape room for English learners, set in the world of Hogwarts. Students have been given detention by Professor Snape. With the help of an old, mysterious map, they must sneak through the castle, solve a series of English challenges and escape before Snape returns.
+Snape’s Detention is a free digital escape room inspired by the world of Harry Potter, made for English teachers who want their students to learn through play. Students team up to escape Professor Snape’s detention by solving a series of English challenges: reading, vocabulary, grammar, riddles and more, all against the clock. With three difficulty levels, built-in hints and a class-wide House Cup, it turns a regular English lesson into an adventure. No accounts, no installation and no preparation needed. Just open the link and let the mischief begin.
 
 It was made for English lessons in lower secondary school (ages 13–16, grades 8–10), but works for any learners at roughly A2–B2 level.
 
@@ -88,7 +88,7 @@ To remove all saved information from a computer, delete the website's data in th
 
 ## License
 
-© 2026 [YOUR NAME]
+© 2026 baschclass
 
 This escape room is licensed under **Creative Commons BY-NC-SA 4.0**
 (https://creativecommons.org/licenses/by-nc-sa/4.0/).
@@ -104,4 +104,4 @@ This is an **unofficial, fan-made teaching resource**. It is not affiliated with
 
 ## Credits
 
-Created by [YOUR NAME], an English teacher in Norway, with the help of Claude (Anthropic).
+Created by baschclass, an English teacher in Norway, with the help of Claude (Anthropic).
