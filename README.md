@@ -7,7 +7,8 @@ Snape’s Detention is a free digital escape room inspired by the world of Harry
 It was made for English lessons in lower secondary school (ages 13–16, grades 8–10), but works for any learners at roughly A2–B2 level.
 
 <img width="2752" height="1536" alt="Snapes_detention_poster" src="https://github.com/user-attachments/assets/e9370b78-4e28-45f4-870c-6ab67a904e88" />
-*Image generated with Gemini by @m3shuga, 2026.*
+
+_Image generated with Gemini by @m3shuga, 2026._
 
 ---
 
